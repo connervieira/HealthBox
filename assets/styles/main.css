@@ -1,0 +1,84 @@
+body {
+    font-family: LatoWebMedium, Helvetica, Arial;
+}
+
+h1, h2, h3, h4, h5, h6 { margin-top: 5px; margin-bottom: 5px; }
+
+h1 { font-size: 3rem; }
+h2 { font-size: 2.5rem; }
+h3 { font-size: 2rem; }
+h4 { font-size: 1.6rem; }
+h5 { font-size: 1.4rem; }
+h6 { font-size: 1.2rem; }
+
+b {
+    font-family: LatoWebBold, Helvetica, Arial;
+}
+
+select, input {
+    border-radius: 10px;
+    padding: 5px;
+}
+
+body {
+    color: white;
+    background: black;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left: 2%;
+    padding-right: 2%;
+    text-align: center;
+}
+
+a {
+    color: inherit;
+    text-decoration: underline;
+    font-family: LatoWebBold, Helvetica, Arial;
+}
+
+hr {
+    margin-top:30px;
+    margin-bottom:30px;
+}
+
+.button {
+    font-family: inherit;
+    font-size: inherit;
+    text-decoration: underline;
+    margin: 5px;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    background: #333333;
+    color: inherit;
+}
+
+.navbar {
+    width: 100%;
+    text-align: left;
+}
+.navbarleft {
+    width: 70%;
+    text-align: left;
+    float: left;
+}
+.navbarright {
+    width: 30%;
+    text-align: right;
+    float: right;
+}
+
+.buffer {
+    margin-bottom: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 5%;
+    padding-right: 5%;
+    border-radius: 15px;
+    background-color: #99999933;
+}
+.list {
+    text-align: left;
+}
+.error { color: #ff0000; }
+.warning { color: #ddbb00; }
