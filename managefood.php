@@ -27,6 +27,8 @@ include "./servicedata.php";
 $food_data = load_food();
 $service_data = load_servicedata();
 
+
+$selected_food = preg_replace("/[^a-zA-Z0-9 _\-]/", '', $_GET["selected"]); // TODO: Sanitize
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -44,9 +46,17 @@ $service_data = load_servicedata();
             <h1>HealthBox</h1>
             <h2>Manage Food</h2>
 
-            <hr>
+            <?php
+            if (strlen($selected_food) > 0) { // Check to see if there is currently a food selected.
+                echo "<p>'$selected_food' is currently selected.</p>";
+                echo "<a class=\"button\" role=\"button\" href=\"managefood.php\">Reset</a>";
+            }
+            ?>
 
-            <h3>Add Food</h3>
+
+
+            <hr>
+            <h3 id="add">Add Food</h3>
             <?php
             if ($_POST["submit"] == "Add") { // Check to see if the form has been submitted.
                 if (in_array($username, array_keys($food_data)) == false) { // Check to see if this user hasn't yet been added to the food database.
@@ -59,7 +69,7 @@ $service_data = load_servicedata();
                 }
 
 
-                $service_id = $_POST["service"];
+                $service_id = $_POST["service"];  // TODO: sanitize
                 $food_id = $_POST["id"];
                 $food_name = $_POST["name"];
                 $serving_size = floatval($_POST["serving_size"]);
@@ -79,59 +89,105 @@ $service_data = load_servicedata();
 
             }
             ?>
-            <form method="POST">
+            <form method="POST" action="managefood.php#add">
                 <label for="service">Service: </label>
                 <select id="service" name="service">
                     <?php
                     foreach (array_keys($service_data[$username]) as $key) {
                         echo "<option value=\"" . $key. "\" ";
-                        if ($_GET["service"] == $key) { echo "selected"; }
+                        if ($food_data["entries"][$username]["foods"][$selected_food]["service"] == $key) { echo "selected"; }
                         echo ">" . $service_data[$username][$key]["name"] . " (" . substr($key, 0, 6) . ")</option>";
                     }
                     ?>
                 </select><br><br>
-                <label for="id">ID: </label><input type="text" id="id" name="id" max="100" pattern="[a-zA-Z0-9 _\-]{1,100}" required><br>
-                <label for="name">Name: </label><input type="text" id="name" name="name" max="100" pattern="[a-zA-Z0-9 _\-]{1,100}" required><br>
-                <label for="serving_size">Serving Size: </label><input type="number" id="serving_size" name="serving_size" min="0" max="10000" required><br>
-                <label for="serving_unit">Serving Unit: </label><input type="text" id="serving_unit" name="serving_unit" maxlength="20" pattern="[a-z ]{1,20}" required><br><br>
+                <label for="id">Food ID: </label><input type="text" id="id" name="id" max="100" pattern="[a-zA-Z0-9 _\-]{1,100}" value="<?php echo $selected_food; ?>" required><br>
+                <label for="name">Name: </label><input type="text" id="name" name="name" max="100" pattern="[a-zA-Z0-9 _\-]{1,100}" value="<?php echo $food_data["entries"][$username]["foods"][$selected_food]["name"]; ?>" required><br>
+                <label for="serving_size">Serving Size: </label><input type="number" id="serving_size" name="serving_size" min="0" max="10000" value="<?php echo $food_data["entries"][$username]["foods"][$selected_food]["serving"]["size"]; ?>" required><br>
+                <label for="serving_unit">Serving Unit: </label><input type="text" id="serving_unit" name="serving_unit" maxlength="20" pattern="[a-z ]{1,20}" value="<?php echo $food_data["entries"][$username]["foods"][$selected_food]["serving"]["unit"]; ?>" required><br><br>
                 <?php
                 foreach ($food_data["metadata"]["values"]["displayed_nutrients"] as $nutrient) {
-                    echo "<label for='" . $nutrient . "'>" . $food_data["metadata"]["values"]["nutrients"][$nutrient]["name"] . "</label>: <input id='" . $nutrient . "' name='" . $nutrient . "' min='0' style='width:80px;' type='number'> " . $food_data["metadata"]["values"]["nutrients"][$nutrient]["unit"] . "<br>";
+                    echo "<label for='" . $nutrient . "'>" . $food_data["metadata"]["values"]["nutrients"][$nutrient]["name"] . "</label>: <input id='" . $nutrient . "' name='" . $nutrient . "' min='0' value='" . $food_data["entries"][$username]["foods"][$selected_food]["nutrients"][$nutrient] . "' style='width:80px;' type='number'> " . $food_data["metadata"]["values"]["nutrients"][$nutrient]["unit"] . "<br>";
                 } 
                 ?>
                 <input class="button" name="submit" id="submit" type="submit" value="Add">
             </form>
 
+
+
+
+
             <hr>
-            <h3>Remove Service</h3>
+            <h3 id="remove">Remove Food</h3>
             <?php
             if ($_POST["submit"] == "Remove") {
-                $id = preg_replace("/[^a-z0-9]/", '', strtolower($_POST["id"]));
-                if (in_array($id, array_keys($service_data[$username]))) { // Check to see if this ID exists in this user's registered services.
-                    unset($service_data[$username][$id]); // Remove this service.
-                    echo "<p>The specified service has been removed.</p>";
-                    save_servicedata($service_data);
+                $food_id = preg_replace("/[^a-zA-Z0-9 _\-]/", '', $_POST["food"]);
+                $service_id = preg_replace("/[^a-f0-9]/", '', strtolower($_POST["service"]));
+                if (in_array($username, array_keys($food_data["entries"]))) { // Check to see if this user exists in the food database.
+                    if (in_array($food_id, array_keys($food_data["entries"][$username]["foods"]))) { // Check to see if this ID exists in this users foods.
+                        $get_data = "?service=" . $service_id . "&food=" . $food_id;
+                        echo "<p>Request URL: <a href='./updatefood.php" . $get_data . "'>" . "./updatefood.php" . $get_data . "</a></p>";
+                    } else {
+                        echo "<p>The specified food ID does not exist.</p>";
+                        echo "<a class=\"button\" role=\"button\" href=\"managefood.php\">Back</a>";
+                        exit();
+                    }
                 } else {
-                    echo "<p>The specified service ID does not exist.</p>";
-                    echo "<a class=\"button\" role=\"button\" href=\"manageservices.php\">Back</a>";
+                    echo "<p>You do not have any entries in the food database.</p>";
+                    echo "<a class=\"button\" role=\"button\" href=\"managefood.php\">Back</a>";
                     exit();
                 }
             }
             ?>
-            <form method="POST" action="manageservices.php">
-                <label for="id">ID: </label><input type="text" id="id" name="id" max="32" pattern="[a-f0-9]{1,32}" value="<?php echo $_GET["selected"]; ?>" required><br>
+            <form method="POST" action="managefood.php#remove">
+                <select id="service" name="service" required>
+                    <?php
+                    foreach (array_keys($service_data[$username]) as $key) {
+                        echo "<option value=\"" . $key. "\" ";
+                        if ($food_data["entries"][$username]["foods"][$selected_food]["service"] == $key) { echo "selected"; }
+                        echo ">" . $service_data[$username][$key]["name"] . " (" . substr($key, 0, 6) . ")</option>";
+                    }
+                    ?>
+                </select><br>
+                <label for="food">Food ID: </label><input type="text" id="food" name="food" max="100" pattern="[a-zA-Z0-9 _\-]{1,100}" value="<?php echo $selected_food; ?>" required><br>
                 <input class="button" name="submit" id="submit" type="submit" value="Remove">
             </form>
 
-            <hr>
 
-            <h3>View Service</h3>
+
+
+            <hr>
+            <h3 id="view">View Food</h3>
             <?php
-            foreach (array_keys($service_data[$username]) as $service) {
-                echo "<div class=\"buffer\">";
-                echo "<h4>" . $service_data[$username][$service]["name"] . "</h4>";
-                echo "<p><a href='?selected=" . $service . "'>" . $service . "</a></p>";
-                echo "</div>";
+            if ($_POST["submit"] == "View") {
+                $food_id = preg_replace("/[^a-zA-Z0-9 _\-]/", '', $_POST["food"]);
+                if (in_array($food_id, array_keys($food_data["entries"][$username]["foods"]))) { // Check to see if this ID exists in this users foods.
+                    print_r($food_data["entries"][$username]["foods"][$food_id]);
+                } else {
+                    echo "<p>The specified food ID does not exist.</p>";
+                    echo "<a class=\"button\" role=\"button\" href=\"managefood.php\">Back</a>";
+                    exit();
+                }
+            }
+            ?>
+            <form method="POST" action="managefood.php#view">
+                <label for="food">Food ID: </label><input type="text" id="food" name="food" max="100" pattern="[a-zA-Z0-9 _\-]{1,100}" value="<?php echo $selected_food; ?>" required><br>
+                <input class="button" name="submit" id="submit" type="submit" value="View">
+            </form>
+
+
+
+
+            <hr>
+            <h3 id="list">List Foods</h3>
+            <?php
+            if (in_array($username, array_keys($food_data["entries"])) and sizeof($food_data["entries"][$username]["foods"]) > 0) {
+                foreach (array_keys($food_data["entries"][$username]["foods"]) as $food) {
+                    echo "<div class=\"buffer\">";
+                    echo "<h4><a href='?selected=" . $food . "'>" . $food_data["entries"][$username]["foods"][$food]["name"] . " (" . $food . ")</a></h4>";
+                    echo "</div>";
+                }
+            } else {
+                echo "<p>You have no foods registered.</p>";
             }
             ?>
         </main>

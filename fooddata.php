@@ -5,7 +5,7 @@ $food_database_filepath = $healthbox_config["database_location"] . "/food.json";
 
 function load_food() {
     global $food_database_filepath;
-    if (file_exists($food_database_filepath) == false or 1==1) {
+    if (file_exists($food_database_filepath) == false) {
         $nutrients_raw_data = '{
                 "metadata": {
                     "values": {
@@ -77,11 +77,11 @@ function load_food() {
 }
 
 
-function save_foodata($data) {
+function save_food($data) {
     global $food_database_filepath;
 
-    $encoded_fooddata = json_encode($data, (JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
-    if (!file_put_contents($food_database_filepath, $encoded_fooddata)) { // Set the contents of the database file to the supplied data.
+    $encoded_food_data = json_encode($data, (JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+    if (!file_put_contents($food_database_filepath, $encoded_food_data)) { // Set the contents of the database file to the supplied data.
         echo "<p>Failed to save service database</p>";
     }
 }

@@ -69,13 +69,18 @@ if ($serving_unit != preg_replace("/[^a-z ]/", '', $serving_unit)) { // Check to
 if (!in_array($associated_user, $food_data["entries"])) { // Check to see if this user doesn't yet exist in the food database.
     $food_data["entries"][$associated_user] = array();
 }
+if (!in_array("foods", $food_data["entries"][$associated_user])) { // Check to see if this user doesn't yet exist in the food database.
+    $food_data["entries"][$associated_user] = array();
+}
 
-$food_data["entries"][$associated_user][$food_id] = array(); // Initialize this new food.
-$food_data["entries"][$associated_user][$food_id]["name"] = $food_name;
-$food_data["entries"][$associated_user][$food_id]["serving"] = array();
-$food_data["entries"][$associated_user][$food_id]["serving"]["size"] = $serving_size;
-$food_data["entries"][$associated_user][$food_id]["serving"]["unit"] = $serving_unit;
-$food_data["entries"][$associated_user][$food_id]["nutrients"] = array(); // Initialize this new food.
+
+$food_data["entries"][$associated_user]["foods"][$food_id] = array(); // Initialize this new food.
+$food_data["entries"][$associated_user]["foods"][$food_id]["service"] = $service_id; // This is the service that updated this food.
+$food_data["entries"][$associated_user]["foods"][$food_id]["name"] = $food_name;
+$food_data["entries"][$associated_user]["foods"][$food_id]["serving"] = array();
+$food_data["entries"][$associated_user]["foods"][$food_id]["serving"]["size"] = $serving_size;
+$food_data["entries"][$associated_user]["foods"][$food_id]["serving"]["unit"] = $serving_unit;
+$food_data["entries"][$associated_user]["foods"][$food_id]["nutrients"] = array(); // Initialize this new food.
 
 foreach (array_keys($food_data["metadata"]["values"]["nutrients"]) as $nutrient) { // Iterate through each nutrient in the database.
     $nutrient_input = $_GET[$nutrient];
