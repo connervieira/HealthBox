@@ -45,6 +45,7 @@ if (in_array($username, $healthbox_config["auth"]["access"]["admin"]) == false) 
             <hr>
             <a class="button" role="button" href="./manageservices.php">Manage Services</a>
             <a class="button" role="button" href="./managedata.php">Manage Data</a>
+            <a class="button" role="button" href="./managefood.php">Manage Food</a>
         </main>
     </body>
 </html>

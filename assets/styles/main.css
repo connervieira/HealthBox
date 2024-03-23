@@ -18,6 +18,8 @@ b {
 select, input {
     border-radius: 10px;
     padding: 5px;
+    color: inherit;
+    background: black;
 }
 
 body {
