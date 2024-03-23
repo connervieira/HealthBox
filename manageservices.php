@@ -47,7 +47,7 @@ $service_data = load_servicedata();
             <h3>Register Service</h3>
             <?php
             if ($_POST["submit"] == "Register") { // Check to see if the form has been submitted.
-                if (in_array($username, array_keys($service_data)) == false) { // Check to see if this user hasn't yet been added tom the service database.
+                if (in_array($username, array_keys($service_data)) == false) { // Check to see if this user hasn't yet been added to the service database.
                     $service_data[$username] = array();
                 }
                 if (sizeof($service_data[$username]) >= 100) { // Check to see if this user already has an excessive amount of services registered.

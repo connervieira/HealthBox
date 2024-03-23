@@ -7,14 +7,7 @@ function load_servicedata() {
     global $servicedata_database_filepath;
 
     if (file_exists($servicedata_database_filepath) == false) {
-        $servicedata_raw = "{}";
-
-        $encoded_servicedata = json_encode(json_decode($servicedata_raw, true), (JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
-        if ($encoded_servicedata == "null") {
-            echo "<p>Failed to initialize service data. It is possible the JSON string is malformed.</p>";
-            return false;
-        }
-        file_put_contents($servicedata_database_filepath, $encoded_servicedata); // Set the contents of the database file to the placeholder data.
+        file_put_contents($servicedata_database_filepath, "{}"); // Set the contents of the database file to placeholder data.
     }
 
     if (file_exists($servicedata_database_filepath) == true) {
@@ -34,6 +27,18 @@ function save_servicedata($data) {
     if (!file_put_contents($servicedata_database_filepath, $encoded_servicedata)) { // Set the contents of the database file to the supplied data.
         echo "<p>Failed to save service database</p>";
     }
+}
+
+
+function find_serviceid($service_id_search, $service_data) {
+    foreach (array_keys($service_data) as $user) { // Iterate through each user in the service database.
+        foreach (array_keys($service_data[$user]) as $key) { // Iterate through each of this user's service IDs.
+            if ($key == $service_id_search) {
+                return $user;
+            }
+        }
+    }
+    return false;
 }
 
 

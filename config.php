@@ -33,5 +33,11 @@ if (file_exists($healthbox_config_filepath) == true) { // Check to see if the it
 }
 
 
+if (!function_exists("save_config")) { // Check to see if the save_config function needs to be created.
+    function save_config($healthbox_config) {
+        global $healthbox_config_filepath;
+        file_put_contents($healthbox_config_filepath, json_encode($healthbox_config, JSON_UNESCAPED_SLASHES));
+    }
+}
 
 ?>
