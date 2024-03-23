@@ -28,7 +28,7 @@ $food_data = load_food();
 $service_data = load_servicedata();
 
 
-$selected_food = preg_replace("/[^a-zA-Z0-9 _\-]/", '', $_GET["selected"]); // TODO: Sanitize
+$selected_food = preg_replace("/[^a-zA-Z0-9 _\-]/", '', $_GET["selected"]); // Sanitize the selected food input from the URL.
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -69,8 +69,8 @@ $selected_food = preg_replace("/[^a-zA-Z0-9 _\-]/", '', $_GET["selected"]); // T
                 }
 
 
-                $service_id = $_POST["service"];  // TODO: sanitize
-                $food_id = $_POST["id"];
+                $service_id = preg_replace("/[^a-f0-9]/", '', strtolower($_POST["service"]));
+                $food_id = preg_replace("/[^a-zA-Z0-9 _\-]/", '', $_POST["food"]);
                 $food_name = $_POST["name"];
                 $serving_size = floatval($_POST["serving_size"]);
                 $serving_unit = $_POST["serving_unit"];
@@ -100,7 +100,7 @@ $selected_food = preg_replace("/[^a-zA-Z0-9 _\-]/", '', $_GET["selected"]); // T
                     }
                     ?>
                 </select><br><br>
-                <label for="id">Food ID: </label><input type="text" id="id" name="id" max="100" pattern="[a-zA-Z0-9 _\-]{1,100}" value="<?php echo $selected_food; ?>" required><br>
+                <label for="food">Food ID: </label><input type="text" id="food" name="food" max="100" pattern="[a-zA-Z0-9 _\-]{1,100}" value="<?php echo $selected_food; ?>" required><br>
                 <label for="name">Name: </label><input type="text" id="name" name="name" max="100" pattern="[a-zA-Z0-9 _\-]{1,100}" value="<?php echo $food_data["entries"][$username]["foods"][$selected_food]["name"]; ?>" required><br>
                 <label for="serving_size">Serving Size: </label><input type="number" id="serving_size" name="serving_size" min="0" max="10000" value="<?php echo $food_data["entries"][$username]["foods"][$selected_food]["serving"]["size"]; ?>" required><br>
                 <label for="serving_unit">Serving Unit: </label><input type="text" id="serving_unit" name="serving_unit" maxlength="20" pattern="[a-z ]{1,20}" value="<?php echo $food_data["entries"][$username]["foods"][$selected_food]["serving"]["unit"]; ?>" required><br><br>
