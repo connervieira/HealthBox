@@ -2,6 +2,7 @@
 include "./metrics.php";
 include "./servicedata.php";
 include "./healthdata.php";
+include "./fooddata.php";
 
 $category_id = $_GET["category"];
 $metric_id = $_GET["metric"];
@@ -26,6 +27,8 @@ if ($associated_user == false) {
     echo "{'error': {'id': 'invalid_service', 'reason': 'not_found', 'description': 'The specified service identifier does not exist.'}}";
     exit();
 }
+
+$food_data = load_food();
 
 $metrics = load_metrics();
 $health_data = load_healthdata();
@@ -53,8 +56,8 @@ if (in_array($metric_id, array_keys($health_data[$associated_user][$category_id]
 
 $submission_data = array();
 foreach ($metrics[$category_id]["metrics"][$metric_id]["keys"] as $key) { // Iterate through each metric to see if they have been submitted.
-    if (isset($_GET["key>" . $key])) { // Check to see if this key exists in the submission data.
-        $submission_data[$key] = $_GET["key>" . $key];
+    if (isset($_GET["key-" . $key])) { // Check to see if this key exists in the submission data.
+        $submission_data[$key] = $_GET["key-" . $key];
     } else {
         $submission_data[$key] = ""; // Use a blank placeholder for now.
     }
@@ -63,7 +66,7 @@ foreach ($metrics[$category_id]["metrics"][$metric_id]["keys"] as $key) { // Ite
 
 $all_required_metrics_present = true; // This will be switched to `false` if a missing value is found.
 for ($i = 0; $i < sizeof($submission_data); $i++) { // Run once for each key in this metric.
-    if (strval($_GET["key>" . $metrics[$category_id]["metrics"][$metric_id]["keys"][$i]]) == "" and $metrics[$category_id]["metrics"][$metric_id]["requirements"][$i] == true) { // Check to see if this value is required but was left blank.
+    if (strval($_GET["key-" . $metrics[$category_id]["metrics"][$metric_id]["keys"][$i]]) == "" and $metrics[$category_id]["metrics"][$metric_id]["requirements"][$i] == true) { // Check to see if this value is required but was left blank.
         $all_required_metrics_present = false;
     }
 }
@@ -229,7 +232,10 @@ for ($i = 0; $i < sizeof($submission_data); $i++) { // Validate each submitted v
             echo "{'error': {'id': 'invalid_value', 'value': '" . $key . "', 'description': 'The data submitted for " . $key . " is invalid because it contains disallowed characters.'}}";
             exit();
         }
-        // TODO: Check to see if this value exists in the food database.
+        if (in_array($submission_data[$key], array_keys($food_data["entries"][$associated_user]["foods"])) == false) { // Check to see if this food ID is not in the food database.
+            echo "{'error': {'id': 'invalid_value', 'value': '" . $key . "', 'description': 'The data submitted for " . $key . " is invalid because the specified ID does not exist in the food database.'}}";
+            exit();
+        }
     } else if ($validation_rule == "mealid") { // mealid: A string that combines a date (YYYY-MM-DD) and meal number, where 0 is a snack (1 for breakfast, 2 for lunch, 3 for dinner) separated by a comma. For example, dinner on May 5th would be "2024-05-21,3".
         if ($submission_data[$key] != preg_replace("/[^0-9,\-]/", '', $submission_data[$key])) { // Check to see if this value contains disallowed characters.
             echo "{'error': {'id': 'invalid_value', 'value': '" . $key . "', 'description': 'The data submitted for " . $key . " is invalid because it contains disallowed characters.'}}";
@@ -244,7 +250,6 @@ for ($i = 0; $i < sizeof($submission_data); $i++) { // Validate each submitted v
             exit();
         }
         $date = explode("-", $meal_components[0]);
-        echo $meal_components[0];
         $meal = intval($meal_components[1]);
         if (!preg_match("/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/", $meal_components[0])) {
             echo "{'error': {'id': 'invalid_value', 'value': '" . $key . "', 'description': 'The data submitted for " . $key . " is invalid because the date is not in the expected format (YYYY-MM-DD).'}}";
@@ -261,13 +266,13 @@ for ($i = 0; $i < sizeof($submission_data); $i++) { // Validate each submitted v
             exit();
         }
     }
-    if ($key == "time") {
-        $datapoint_time = $submission_data[$key];
-        unset($submission_data[$key]);
-    }
 }
 
 
+if (in_array("time", $submission_data)) { // Check to see if there is a timestamp in this submission.
+    $datapoint_time = $submission_data[$key]; // Make this timestamp the key for this entry.
+    unset($submission_data[$key]); // Remove the timestamp from the submission data.
+}
 
 foreach ($health_data[$associated_user][$category_id][$metric_id] as $datapoint) { // Iterate over each existing datapoint for this metric.
     if ($datapoint["data"] == $submission_data) { // Check to see if this datapoint exact matches the data we are about to submit.
@@ -277,7 +282,7 @@ foreach ($health_data[$associated_user][$category_id][$metric_id] as $datapoint)
 }
 
 $health_data[$associated_user][$category_id][$metric_id][$datapoint_time] = array(); // Initialize this datapoint.
-$health_data[$associated_user][$category_id][$metric_id][$datapoint_time]["service"] = $service;
+$health_data[$associated_user][$category_id][$metric_id][$datapoint_time]["service"] = $service_id;
 $health_data[$associated_user][$category_id][$metric_id][$datapoint_time]["data"] = $submission_data; // Initialize this datapoint.
 
 save_healthdata($health_data);
