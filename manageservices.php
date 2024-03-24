@@ -22,8 +22,10 @@ if (in_array($username, $healthbox_config["auth"]["access"]["admin"]) == false) 
 }
 
 include "./servicedata.php";
+include "./healthdata.php";
 
 $service_data = load_servicedata();
+$health_data = load_healthdata();
 
 ?>
 <!DOCTYPE html>
@@ -103,11 +105,27 @@ $service_data = load_servicedata();
             <h3>Remove Service</h3>
             <?php
             if ($_POST["submit"] == "Remove") {
-                $id = preg_replace("/[^a-z0-9]/", '', strtolower($_POST["id"]));
-                if (in_array($id, array_keys($service_data[$username]))) { // Check to see if this ID exists in this user's registered services.
-                    unset($service_data[$username][$id]); // Remove this service.
-                    echo "<p>The specified service has been removed.</p>";
+                $service_id = preg_replace("/[^a-z0-9]/", '', strtolower($_POST["id"]));
+                if (in_array($service_id, array_keys($service_data[$username]))) { // Check to see if this ID exists in this user's registered services.
+
+                    // Remove any datapoints associated with this service in the health database.
+                    foreach (array_keys($health_data) as $user) { // Iterate through each user in the health database.
+                        foreach (array_keys($health_data[$user]) as $category) { // Iterate through each category in this user's health data.
+                            foreach (array_keys($health_data[$user][$category]) as $metric) { // Iterate through each metric in this category.
+                                foreach (array_keys($health_data[$user][$category][$metric]) as $datapoint) { // Iterate through each metric in this category.
+                                    if ($health_data[$user][$category][$metric][$datapoint]["service"] == $service_id) {
+                                        $health_data = delete_datapoint($health_data, $user, $category, $metric, $datapoint);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    unset($service_data[$username][$service_id]); // Remove this service from the service database.
+
+                    save_healthdata($health_data);
                     save_servicedata($service_data);
+                    echo "<p>The specified service has been removed.</p>";
                 } else {
                     echo "<p>The specified service ID does not exist.</p>";
                     echo "<a class=\"button\" role=\"button\" href=\"manageservices.php\">Back</a>";

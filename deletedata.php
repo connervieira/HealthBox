@@ -62,16 +62,8 @@ $service_data = load_servicedata();
                             if (time() - intval($_GET["confirm"]) < 0) { // Check to see if the confirmation timestamp is in the future.
                                 echo "<p>The confirmation timestamp is in the future. If you clicked an external link to get here it is possible someone is attempting to manipulate you into deleting datapoint '<b>" . $category_id . ">" . $metric_id . ">" . $datapoint_id . "</b>'. No data has been affected.</p>";
                             } else if (time() - intval($_GET["confirm"]) < 30) { // Check to see if the confirmation timestamp is less than 30 seconds old.
-                                unset($health_data[$username][$category_id][$metric_id][$datapoint_id]); // Remove this datapoint from the health database.
-                                if (sizeof($health_data[$username][$category_id][$metric_id]) == 0) { // Check to see if this metric is now empty.
-                                    unset($health_data[$username][$category_id][$metric_id]); // Remove this metric from the health database.
-                                    if (sizeof($health_data[$username][$category_id]) == 0) { // Check to see if this category is now empty.
-                                        unset($health_data[$username][$category_id]); // Remove this category from the health database.
-                                        if (sizeof($health_data[$username]) == 0) { // Check to see if this user is now empty.
-                                            unset($health_data[$username]); // Remove this user from the health database.
-                                        }
-                                    }
-                                }
+
+                                $health_data = delete_datapoint($health_data, $username, $category_id, $metric_id, $datapoint_id);
                                 save_healthdata($health_data); // Write the modified health database to disk.
                                 echo "<p>Deleted datapoint '<b>" . $category_id . ">" . $metric_id . ">" . $datapoint_id . "</b>'</p>";
                             } else {

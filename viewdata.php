@@ -50,15 +50,17 @@ $service_data = load_servicedata();
             <hr>
 
             <?php
-
             $category_id = $_GET["category"];
             $metric_id = $_GET["metric"];
 
             if ($category_id == "" and $metric_id == "") {
                 echo "<p>No metric is currently selected. Click the button below to return to the data management page.</p>";
                 echo "<a class='button' href='managedata.php'>Manage Data</a>";
+                header("Location: ./managedata.php");
                 exit();
             }
+
+            echo "<h3>" . $metrics[$category_id]["name"] . " - " . $metrics[$category_id]["metrics"][$metric_id]["name"] . "</h3>";
 
             if (in_array($username, array_keys($health_data))) {
                 if (in_array($category_id, array_keys($health_data[$username]))) {

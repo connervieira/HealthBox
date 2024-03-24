@@ -95,19 +95,19 @@ $service_data = load_servicedata();
                         $key = $metrics[$category]["metrics"][$metric]["keys"][$i];
                         $validation = $metrics[$category]["metrics"][$metric]["validation"][$i];
                         if ($validation == "start_time" or $validation == "end_time" or $validation == "datetime") { // Time-base datatypes.
-                            $value_date = $_GET["key>" . $key . "_date"];
-                            $value_time = $_GET["key>" . $key . "_time"];
+                            $value_date = $_GET["key-" . $key . "_date"];
+                            $value_time = $_GET["key-" . $key . "_time"];
                             $value = strtotime($value_date . " " . $value_time);
                         } else if ($validation == "boolean") { // Boolean values.
-                            if (isset($_GET["key>" . $key])) {
+                            if (isset($_GET["key-" . $key])) {
                                 $value = "t";
                             } else {
                                 $value = "f";
                             }
                         } else { // All other datatypes.
-                            $value = $_GET["key>" . $key];
+                            $value = $_GET["key-" . $key];
                         }
-                        $get_data = $get_data . "&key>" . $key . "=" . $value; // Append this key to the GET data.
+                        $get_data = $get_data . "&key-" . $key . "=" . $value; // Append this key to the GET data.
                     }
 
                     echo "<p>Request URL: <a href='./submit.php" . $get_data . "'>" . "./submit.php" . $get_data . "</a></p>";
@@ -164,14 +164,14 @@ $service_data = load_servicedata();
                                 $required = $metrics[$category_id]["metrics"][$metric_id]["requirements"][$i];
                                 if ($required == true) { echo "<b>"; } // If this field is required, display it in bold font.
                                 if ($validation == "datetime" or $validation == "start_time" or $validation == "end_time") { // Check to see if this value is a timestamp, since these require multiple fields.
-                                    echo "<label for='" . $key . "'>" . $key . " (Date)</label>: <input id='key>" . $key . "_date' name='key>" . $key . "_date' type='date' autocomplete='off'";
+                                    echo "<label for='" . $key . "'>" . $key . " (Date)</label>: <input id='key-" . $key . "_date' name='key-" . $key . "_date' type='date' autocomplete='off'";
                                     if ($required == true) { echo " required"; }
                                     echo "><br>";
-                                    echo "<label for='" . $key . "'>" . $key . " (Time)</label>: <input id='key>" . $key . "_time' name='key>" . $key . "_time' type='time' autocomplete='off'";
+                                    echo "<label for='" . $key . "'>" . $key . " (Time)</label>: <input id='key-" . $key . "_time' name='key-" . $key . "_time' type='time' autocomplete='off'";
                                     if ($required == true) { echo " required"; }
                                     echo "><br>";
                                 } else if ($validation == "sex" or $validation == "sexuality" or $validation == "side") {
-                                    echo "<label for='key>" . $key . "'>" . $key . "</label><select id='key>" . $key . "' name='key>" . $key . "'>";
+                                    echo "<label for='key-" . $key . "'>" . $key . "</label><select id='key-" . $key . "' name='key-" . $key . "'>";
                                     if ($validation == "sex") {
                                         echo "<option value='M'>Male</option>";
                                         echo "<option value='F'>Female</option>";
@@ -199,7 +199,7 @@ $service_data = load_servicedata();
                                     } else if ($validation == "boolean") { echo "type='checkbox'";
                                     }
                                     if ($required == true) { echo " required "; }
-                                    echo " id='key>" . $key . "' name='key>" . $key . "' autocomplete='off'><br>";
+                                    echo " id='key-" . $key . "' name='key-" . $key . "' autocomplete='off'><br>";
                                 }
                                 if ($required == true) { echo "</b>"; }
                             }
@@ -244,16 +244,20 @@ $service_data = load_servicedata();
             <h3>View Data</h3>
 
             <?php
-            foreach (array_keys($health_data[$username]) as $category) {
-                echo "<div class=\"buffer\">";
-                echo "<h4>" . $metrics[$category]["name"] . "</h4>";
-                foreach (array_keys($health_data[$username][$category]) as $metric) {
+            if (in_array($username, array_keys($health_data)) and sizeof($health_data[$username]) > 0) {
+                foreach (array_keys($health_data[$username]) as $category) {
                     echo "<div class=\"buffer\">";
-                    echo "<h5>" . $metrics[$category]["metrics"][$metric]["name"] . "</h5>";
-                    echo "<p><a href='viewdata.php?category=" . $category . "&metric=" . $metric . "'>View " . sizeof($health_data[$username][$category][$metric]) . " Datapoints</a></p>";
+                    echo "<h4>" . $metrics[$category]["name"] . "</h4>";
+                    foreach (array_keys($health_data[$username][$category]) as $metric) {
+                        echo "<div class=\"buffer\">";
+                        echo "<h5>" . $metrics[$category]["metrics"][$metric]["name"] . "</h5>";
+                        echo "<p><a href='viewdata.php?category=" . $category . "&metric=" . $metric . "'>View " . sizeof($health_data[$username][$category][$metric]) . " Datapoints</a></p>";
+                        echo "</div>";
+                    }
                     echo "</div>";
                 }
-                echo "</div>";
+            } else {
+                echo "<p>There are no health data points associated with your account.</p>";
             }
             ?>
         </main>
