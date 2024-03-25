@@ -18,10 +18,10 @@ if (!function_exists("load_metrics")) { // Check to see if the 'load_metrics' fu
                         "active_calories": {"name": "Active Calories", "description": "Calories that have been burned above the resting baseline.", "validation": ["float", "start_time", "end_time"], "requirements": [true, true, true], "keys": ["calories", "start_time", "end_time"]},
                         "resting_calories": {"name": "Resting Calories", "description": "How much energy is burned while resting", "validation": ["float", "start_time", "end_time"], "requirements": [true, true, true], "keys": ["calories", "start_time", "end_time"]},
                         "distance_pedestrian": {"name": "On Foot Distance", "description": "Kilometers traveled through walking, running, or otherwise on foot", "validation": ["float", "start_time", "end_time"], "requirements": [true, true, true], "keys": ["distance", "start_time", "end_time"]},
-                        "distance_wheelchair": {"name": "Wheelchair Distance", "description": "Kilometers traveled by manual wheel chair movement", "validation": ["float", "start_time", "end_time", "vehicleid"], "requirements": [true, true, true, false], "keys": ["distance", "start_time", "end_time", "vehicleid"]},
-                        "distance_cycling_manual": {"name": "Cycling Distance", "description": "Kilometers traveled by manual bicycle pedaling", "validation": ["float", "start_time", "end_time", "vehicleid"], "requirements": [true, true, true, false], "keys": ["distance", "start_time", "end_time", "vehicleid"]},
-                        "distance_cycling_assisted": {"name": "Cycling Distance Assisted", "description": "Kilometers traveled by bicycle with powered assistance", "validation": ["float", "start_time", "end_time", "short_string", "vehicleid"], "requirements": [true, true, true, false, false], "keys": ["distance", "start_time", "end_time", "assistance_level", "vehicleid"]},
-                        "distance_vehicle": {"name": "Vehicle Distance", "description": "Kilometers traveled by motor vehicle", "validation": ["float", "start_time", "end_time", "vehicleid"], "requirements": [true, true, true, false], "keys": ["distance", "start_time", "end_time", "vehicleid"]},
+                        "distance_wheelchair": {"name": "Wheelchair Distance", "description": "Kilometers traveled by manual wheel chair movement", "validation": ["float", "start_time", "end_time", "short_string"], "requirements": [true, true, true, false], "keys": ["distance", "start_time", "end_time", "vehicleid"]},
+                        "distance_cycling_manual": {"name": "Cycling Distance", "description": "Kilometers traveled by manual bicycle pedaling", "validation": ["float", "start_time", "end_time", "short_string"], "requirements": [true, true, true, false], "keys": ["distance", "start_time", "end_time", "vehicleid"]},
+                        "distance_cycling_assisted": {"name": "Cycling Distance Assisted", "description": "Kilometers traveled by bicycle with powered assistance", "validation": ["float", "start_time", "end_time", "short_string", "short_string"], "requirements": [true, true, true, false, false], "keys": ["distance", "start_time", "end_time", "assistance_level", "vehicleid"]},
+                        "distance_vehicle": {"name": "Vehicle Distance", "description": "Kilometers traveled by motor vehicle", "validation": ["float", "start_time", "end_time", "short_string"], "requirements": [true, true, true, false], "keys": ["distance", "start_time", "end_time", "vehicleid"]},
                         "minutes_active": {"name": "Active Minutes", "description": "Minutes that are spent moving around, being active", "validation": ["start_time", "end_time"], "requirements": [true, true], "keys": ["start_time", "end_time"]},
                         "minutes_resting": {"name": "Resting Minutes", "description": "Minutes that are spent dormant, not being active", "validation": ["start_time", "end_time"], "requirements": [true, true], "keys": ["start_time", "end_time"]},
                         "minutes_standing": {"name": "Minutes Standing", "description": "Minutes spent standing", "validation": ["start_time", "end_time"], "requirements": [true, true], "keys": ["start_time", "end_time"]},
@@ -102,7 +102,7 @@ if (!function_exists("load_metrics")) { // Check to see if the 'load_metrics' fu
 if (!function_exists("validate_metrics")) { // Check to see if the 'validate_metrics' function hasn't yet been created.
     function validate_metrics($metrics_data, $output = 0) {
         // Validation options:
-        $validation_options = array("int", "float", "start_time", "end_time", "datetime", "short_string", "long_string", "boolean", "sex", "sexuality", "temperature", "percentage", "side", "vehicleid", "foodid", "mealid");
+        $validation_options = array("int", "float", "start_time", "end_time", "datetime", "short_string", "long_string", "boolean", "sex", "sexuality", "temperature", "percentage", "side", "foodid", "mealid");
         # int: A positive whole number
         # float: A positive decimal number
         # start_time: A Unix timestamp before end_time (integer)
@@ -116,7 +116,6 @@ if (!function_exists("validate_metrics")) { // Check to see if the 'validate_met
         # temperature: A positive or negative float, above -273
         # percentage: A decimal number ranged 0 to 1, inclusively
         # side: A 1 character string: L or R
-        # vehicleid: A vehicle ID that exists in the vehicle database.
         # foodid: A food ID that exists in the food database.
         # mealid: A string that combines a date (YYYY-MM-DD) and meal number, where 0 is a snack (1 for breakfast, 2 for lunch, 3 for dinner) separated by a comma. For example, dinner on May 5th would be "2024-05-21,3".
 

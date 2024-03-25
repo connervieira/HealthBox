@@ -211,17 +211,6 @@ for ($i = 0; $i < sizeof($submission_data); $i++) { // Validate each submitted v
             echo "{'error': {'id': 'invalid_value', 'value': '" . $key . "', 'description': 'The data submitted for " . $key . " is invalid because it is not a valid option.'}}";
             exit();
         }
-    } else if ($validation_rule == "vehicleid") { // vehicleid: A vehicle ID that exists in the vehicle database.
-        $submission_data[$key] = strval($submission_data[$key]); // Convert this value to a string.
-        if (strlen($submission_data[$key]) > 150) { // Check to see if this value is excessively long.
-            echo "{'error': {'id': 'invalid_value', 'value': '" . $key . "', 'description': 'The data submitted for " . $key . " is invalid because it is excessively long.'}}";
-            exit();
-        }
-        if ($submission_data[$key] != preg_replace("/[^a-zA-Z0-9 '_\-()]/", '', $submission_data[$key])) { // Check to see if this value contains disallowed characters.
-            echo "{'error': {'id': 'invalid_value', 'value': '" . $key . "', 'description': 'The data submitted for " . $key . " is invalid because it contains disallowed characters.'}}";
-            exit();
-        }
-        // TODO: Check to see if this ID exists in the vehicle database.
     } else if ($validation_rule == "foodid") { // foodid: A food ID that exists in the food database.
         $submission_data[$key] = strval($submission_data[$key]); // Convert this value to a string.
         if (strlen($submission_data[$key]) > 150) { // Check to see if this value is excessively long.
