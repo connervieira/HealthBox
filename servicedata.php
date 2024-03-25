@@ -41,5 +41,31 @@ function find_serviceid($service_id_search, $service_data) {
     return false;
 }
 
+function check_permissions_access($service, $category, $metric, $action, $data) {
+    $user = find_serviceid($service, $data);
+    if ($user !== false) { // Check to make sure an associated user was found.
+        if (in_array($category, array_keys($data[$user][$service]))) { // Check to see if this category is set for this service.
+            if (in_array($metric, array_keys($data[$user][$service][$category]))) { // Check to see if this metric is set for this service.
+                if (in_array($action, array_keys($data[$user][$service][$category][$metric]))) { // Check to see if this action is set for this service.
+                    if ($data[$user][$service][$category][$metric][$action] == true) { // Check to see if this action is granted.
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else { // The specified action is not set for this service.
+                    return false;
+                }
+            } else { // The specified metric is not set for this service.
+                return false;
+            }
+        } else { // The specified category is not set for this service.
+            return false;
+        }
+    } else { // The specified service does not exist.
+        echo "The specified service ID could not be found.";
+        return false;
+    }
+}
+
 
 ?>

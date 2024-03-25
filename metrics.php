@@ -1,7 +1,7 @@
 <?php
 
 include "./config.php";
-include "./food.php";
+include "./fooddata.php";
 
 $metrics_database_filepath = $healthbox_config["database_location"] . "/metrics.json";
 

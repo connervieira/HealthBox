@@ -97,7 +97,7 @@ $health_data = load_healthdata();
             }
             ?>
             <form method="POST">
-                <label for="name">Name: </label><input type="text" id="name" name="name" max="100" pattern="[a-zA-Z0-9 '_\-]{1,100}" required><br>
+                <label for="name">Name: </label><input type="text" id="name" name="name" max="100" autocomplete="off" pattern="[a-zA-Z0-9 '_\-]{1,100}" required><br>
                 <input class="button" name="submit" id="submit" type="submit" value="Register">
             </form>
 
@@ -134,7 +134,7 @@ $health_data = load_healthdata();
             }
             ?>
             <form method="POST" action="manageservices.php">
-                <label for="id">ID: </label><input type="text" id="id" name="id" max="32" pattern="[a-f0-9]{1,32}" value="<?php echo $_GET["selected"]; ?>" required><br>
+                <label for="id">ID: </label><input type="text" id="id" name="id" max="32" autocomplete="off" pattern="[a-f0-9]{1,32}" value="<?php echo $_GET["selected"]; ?>" required><br>
                 <input class="button" name="submit" id="submit" type="submit" value="Remove">
             </form>
 
@@ -142,11 +142,15 @@ $health_data = load_healthdata();
 
             <h3>View Service</h3>
             <?php
-            foreach (array_keys($service_data[$username]) as $service) {
-                echo "<div class=\"buffer\">";
-                echo "<h4>" . $service_data[$username][$service]["name"] . "</h4>";
-                echo "<p><a href='?selected=" . $service . "'>" . $service . "</a></p>";
-                echo "</div>";
+            if (sizeof($service_data[$username]) > 0) {
+                foreach (array_keys($service_data[$username]) as $service) {
+                    echo "<div class=\"buffer\">";
+                    echo "<h4>" . $service_data[$username][$service]["name"] . " <a href='updateservice.php?selected=$service' class='button'>Update</a></h4>";
+                    echo "<p><a href='?selected=" . $service . "'>" . $service . "</a></p>";
+                    echo "</div>";
+                }
+            } else {
+                echo "<p>You have no services registered.</p>";
             }
             ?>
         </main>

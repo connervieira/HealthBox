@@ -100,9 +100,9 @@ $selected_food = preg_replace("/[^a-zA-Z0-9 _\-]/", '', $_GET["selected"]); // S
                     }
                     ?>
                 </select><br><br>
-                <label for="food">Food ID: </label><input type="text" id="food" name="food" max="100" pattern="[a-zA-Z0-9 _\-]{1,100}" value="<?php echo $selected_food; ?>" required><br>
-                <label for="name">Name: </label><input type="text" id="name" name="name" max="100" pattern="[a-zA-Z0-9 _\-]{1,100}" value="<?php echo $food_data["entries"][$username]["foods"][$selected_food]["name"]; ?>" required><br>
-                <label for="serving_size">Serving Size: </label><input type="number" id="serving_size" name="serving_size" min="0" max="10000" value="<?php echo $food_data["entries"][$username]["foods"][$selected_food]["serving"]["size"]; ?>" required><br>
+                <label for="food">Food ID: </label><input type="text" id="food" name="food" max="100" autocomplete="off" pattern="[a-zA-Z0-9 _\-]{1,100}" value="<?php echo $selected_food; ?>" required><br>
+                <label for="name">Name: </label><input type="text" id="name" name="name" max="100" autocomplete="off" pattern="[a-zA-Z0-9 _\-]{1,100}" value="<?php echo $food_data["entries"][$username]["foods"][$selected_food]["name"]; ?>" required><br>
+                <label for="serving_size">Serving Size: </label><input type="number" id="serving_size" name="serving_size" autocomplete="off" min="0" max="10000" value="<?php echo $food_data["entries"][$username]["foods"][$selected_food]["serving"]["size"]; ?>" required><br>
                 <label for="serving_unit">Serving Unit: </label><input type="text" id="serving_unit" name="serving_unit" maxlength="20" pattern="[a-z ]{1,20}" value="<?php echo $food_data["entries"][$username]["foods"][$selected_food]["serving"]["unit"]; ?>" required><br><br>
                 <?php
                 foreach ($food_data["metadata"]["values"]["displayed_nutrients"] as $nutrient) {
@@ -148,7 +148,7 @@ $selected_food = preg_replace("/[^a-zA-Z0-9 _\-]/", '', $_GET["selected"]); // S
                     }
                     ?>
                 </select><br>
-                <label for="food">Food ID: </label><input type="text" id="food" name="food" max="100" pattern="[a-zA-Z0-9 _\-]{1,100}" value="<?php echo $selected_food; ?>" required><br>
+                <label for="food">Food ID: </label><input type="text" id="food" name="food" max="100" pattern="[a-zA-Z0-9 _\-]{1,100}" autocomplete="off" value="<?php echo $selected_food; ?>" required><br>
                 <input class="button" name="submit" id="submit" type="submit" value="Remove">
             </form>
 
