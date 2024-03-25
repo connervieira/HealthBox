@@ -29,7 +29,6 @@ if ($associated_user == false) {
 }
 
 $food_data = load_food();
-
 $metrics = load_metrics();
 $health_data = load_healthdata();
 
@@ -42,6 +41,16 @@ if (in_array($metric_id, array_keys($metrics[$category_id]["metrics"])) == false
     echo "{'error': {'id': 'invalid_metric', 'description': 'The specified metric ID does not exist.'}}";
     exit();
 }
+
+
+// Verify that the permissions of the specified service ID allow it to write to this metric.
+$access = check_permissions_access($service_id, $category_id, $metric_id, "w", $services);
+if ($access == false) {
+    echo "{'error': {'id': 'permission_denied', 'description': 'The specified service does not have permission to write to the specified metric.'}}";
+    exit();
+}
+
+
 
 if (in_array($associated_user, array_keys($health_data)) == false) { // Check to see if this user hasn't yet been initialized in the health data.
     $health_data[$associated_user] = array(); // Initialize this user.
