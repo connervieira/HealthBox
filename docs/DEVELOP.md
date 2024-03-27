@@ -13,5 +13,6 @@ Here is a list of the endpoints currently implemented by HealthBox.
 
 - **/healthbox/submit.php**: Used to submit datapoints to health metrics.
 - **/healthbox/fetch.php**: Used to fetch health information for a particular metric.
+- **/healthbox/delete.php**: Used to delete a specific datapoint for a particular metric.
 - **/healthbox/updatefood.php**: Used to add or edit existing foods.
 - **/healthbox/deletefood.php**: Used to delete foods.
