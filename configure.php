@@ -148,9 +148,7 @@ if (in_array($username, $healthbox_config["auth"]["access"]["admin"]) == false) 
                     <option value="blacklist" <?php if ($healthbox_config["auth"]["access"]["mode"] == "blacklist") { echo "selected"; } ?>>Blacklist</option>
                 </select><br>
 
-                <br><h3>System</h3>
-
-                <input type="submit" id="submit" name="submit" value="Submit">
+                <br><input type="submit" id="submit" name="submit" value="Submit">
             </form>
         </main>
     </body>

@@ -172,7 +172,6 @@ $selected = preg_replace("/[^a-f0-9]/", '', $selected);
                     exit();
                 }
 
-                $available_permissions = array("foods-add", "foods-edit", "foods-fetch-all", "foods-fetch-list", "foods-fetch-nutrients");
                 $permission = preg_replace("/[^a-z\-_]/", '', $_POST["permission"]);
                 if (!in_array($permission, $available_permissions)) { // Verify that the specified permission is a valid option.
                     echo "<p>The specified permission is invalid.</p>";
@@ -203,11 +202,11 @@ $selected = preg_replace("/[^a-f0-9]/", '', $selected);
             <form method="POST">
                 <label for="service">Service ID: </label><input type="text" id="service" name="service" max="50" pattern="[a-f0-9]{1,50}" value="<?php echo $selected; ?>" required><br>
                 <label for="permission">Permission: </label><select id="permission" name="permission" required>
-                    <option value="foods-add">foods-add</option>
-                    <option value="foods-edit">foods-edit</option>
-                    <option value="foods-fetch-all">foods-fetcha-all</option>
-                    <option value="foods-fetch-list">foods-fetch-list</option>
-                    <option value="foods-fetch-nutrients">foods-fetch-nutrients</option>
+                    <?php
+                    foreach ($available_permissions as $permission) {
+                        echo "<option value=\"" . $permission . "\">" . $permission . "</option>";
+                    }
+                    ?>
                 </select><br>
                 <label for="action">Action: </label><select id="action" name="action" required>
                     <option value="grant">Grant</option>

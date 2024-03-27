@@ -50,7 +50,7 @@ $service_data = load_servicedata();
             <?php
             if (!in_array($username, array_keys($service_data)) or sizeof($service_data[$username]) <= 0) { // Check to see if this user is not yet in the service database.
                 echo "<p>You have no services registered with HealthBox!</p>";
-                echo "<p>You need to register a service to use to submit data.</p>";
+                echo "<p>You need to register a service to submit data.</p>";
                 exit();
             }
             ?>
@@ -127,7 +127,7 @@ $service_data = load_servicedata();
                     ?>
                 </select><br>
                 <label for="category">Category: </label>
-                <select id="category" name="category">
+                <select id="category" name="category" <?php if (isset($_GET["category"])) { echo " readonly";}?>>
                     <?php
                     foreach (array_keys($metrics) as $category) {
                         echo "<option value=\"" . $category . "\" ";
@@ -219,28 +219,6 @@ $service_data = load_servicedata();
             </form>
 
             <hr>
-            <h3>Remove Data</h3>
-            <?php
-            if ($_POST["submit"] == "Remove") {
-                $id = preg_replace("/[^a-z0-9]/", '', strtolower($_POST["id"]));
-                if (in_array($id, array_keys($service_data[$username]))) { // Check to see if this ID exists in this user's registered services.
-                    unset($service_data[$username][$id]); // Remove this service.
-                    echo "<p>The specified service has been removed.</p>";
-                    save_servicedata($service_data);
-                } else {
-                    echo "<p>The specified service ID does not exist.</p>";
-                    echo "<a class=\"button\" role=\"button\" href=\"managedata.php\">Back</a>";
-                    exit();
-                }
-            }
-            ?>
-            <form method="POST" action="managedata.php">
-                <label for="id">ID: </label><input type="text" id="id" name="id" max="32" pattern="[a-f0-9]{1,32}" value="<?php echo $_GET["selected"]; ?>" required><br>
-                <input class="button" name="submit" id="submit" type="submit" value="Remove">
-            </form>
-
-            <hr>
-
             <h3>View Data</h3>
 
             <?php

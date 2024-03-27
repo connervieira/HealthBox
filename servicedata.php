@@ -1,5 +1,6 @@
 <?php
 include "./config.php";
+$available_permissions = array("foods-add", "foods-edit", "foods-delete", "foods-fetch-all", "foods-fetch-list", "foods-fetch-nutrients");
 
 $servicedata_database_filepath = $healthbox_config["database_location"] . "/services.json";
 

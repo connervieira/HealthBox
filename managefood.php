@@ -125,7 +125,7 @@ $selected_food = preg_replace("/[^a-zA-Z0-9 _\-]/", '', $_GET["selected"]); // S
                 if (in_array($username, array_keys($food_data["entries"]))) { // Check to see if this user exists in the food database.
                     if (in_array($food_id, array_keys($food_data["entries"][$username]["foods"]))) { // Check to see if this ID exists in this users foods.
                         $get_data = "?service=" . $service_id . "&food=" . $food_id;
-                        echo "<p>Request URL: <a href='./updatefood.php" . $get_data . "'>" . "./updatefood.php" . $get_data . "</a></p>";
+                        echo "<p>Request URL: <a href='./deletefood.php" . $get_data . "'>" . "./updatefood.php" . $get_data . "</a></p>";
                     } else {
                         echo "<p>The specified food ID does not exist.</p>";
                         echo "<a class=\"button\" role=\"button\" href=\"managefood.php\">Back</a>";
