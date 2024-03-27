@@ -30,7 +30,11 @@ if (!in_array("foods-delete", array_keys($services[$associated_user][$service_id
 }
 
 include "./fooddata.php";
+include "./healthdata.php";
+include "./metrics.php";
 $food_data = load_food();
+$health_data = load_healthdata();
+$metrics = load_metrics();
 
 
 if ($food_id != preg_replace("/[^a-zA-Z0-9\-_]/", '', $food_id)) { // Check to see if the provided food_id contains disallowed values.
@@ -45,6 +49,34 @@ if ($food_id != preg_replace("/[^a-zA-Z0-9\-_]/", '', $food_id)) { // Check to s
 if (!in_array($food_id, array_keys($food_data["entries"][$associated_user]["foods"]))) {
     echo "{'error': {'id': 'invalid_id', 'description': 'The specified food_id does not exist in this user's food database.'}}";
     exit();
+}
+
+
+// Remove any datapoints that reference this food ID.
+$healthdata_modified = false; // This will be switched to true if the health data has been modified (and needs to be saved).
+if (in_array($associated_user, array_keys($health_data))) { // Check to see if this user exists in the health database.
+    foreach (array_keys($metrics) as $category) { // Iterate through each category.
+        foreach (array_keys($metrics[$category]["metrics"]) as $metric) { // Iterate through each metric.
+            $validation_index = 0;
+            foreach ($metrics[$category]["metrics"][$metric]["validation"] as $validation) { // Iterate through each validation rule.
+                $corresponding_key_name = $metrics[$category]["metrics"][$metric]["keys"][$validation_index];
+                if ($validation == "foodid") { // Check to see if this metric makes use of food IDs.
+                    if (isset($health_data[$associated_user][$category][$metric])) { // Check to see if this user has any datapoints for this metric.
+                        foreach (array_keys($health_data[$associated_user][$category][$metric]) as $datapoint) { // Iterate through each validation rule.
+                            if ($health_data[$associated_user][$category][$metric][$datapoint]["data"][$corresponding_key_name] == $food_id) { // Check to see if the food connected to this datapoint is the same as the food we are currently deleting.
+                                $healthdata_modified = true;
+                                $health_data = delete_datapoint($health_data, $associated_user, $category, $metric, $datapoint); // Erase this datapoint.
+                            }
+                        }
+                    }
+                }
+                $validation_index = $validation_index + 1;
+            }
+        }
+    }
+}
+if ($healthdata_modified == true) {
+    save_healthdata($health_data);
 }
 
 unset($food_data["entries"][$associated_user]["foods"][$food_id]);
