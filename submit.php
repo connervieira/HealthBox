@@ -44,7 +44,11 @@ if (in_array($metric_id, array_keys($metrics[$category_id]["metrics"])) == false
 
 
 // Verify that the permissions of the specified service ID allow it to write to this metric.
-$access = check_permissions_access($service_id, $category_id, $metric_id, "w", $services);
+if (in_array("data-writeall", array_keys($services[$associated_user][$service_id]["permissions"]["action"])) and $services[$associated_user][$service_id]["permissions"]["action"]["data-writeall"] == true) { // Check to see if this service has the override permission to write to all metrics.
+    $access = true;
+} else { // Otherwise, check to see if this service can access this specific metric.
+    $access = check_permissions_access($service_id, $category_id, $metric_id, "w", $services);
+}
 if ($access == false) {
     echo "{'error': {'id': 'permission_denied', 'description': 'The specified service does not have permission to write to the specified metric.'}}";
     exit();

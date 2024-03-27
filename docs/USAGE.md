@@ -28,6 +28,8 @@ Services can also be granted permission to use certain "actions". These actions 
 - **foods-edit** allows a service to overwrite existing foods in the food database (but not create new ones).
 - **foods-delete** allows a service to delete existing foods in the food database.
 - **foods-fetch-all** allows a service to read the entire food database, and all information it includes.
+- **data-readall** allows a service to read data from all metrics in the health database, regardless of the access permissions set.
+- **data-writeall** allows a service to write data to all metrics in the health database, regardless of the access permissions set.
 - **foods-fetch-list** allows a service to fetch a list of all food IDs in the database, as well as the food name, serving size, and serving unit. It does not allow the service to see nutrition information for each food.
 - **foods-fetch-nutrients** allows a service to get all information associated with a specific food (including nutrition information), given its food ID. It does not allow a service to list all food IDs.
 

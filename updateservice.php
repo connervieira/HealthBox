@@ -183,7 +183,7 @@ $selected = preg_replace("/[^a-f0-9]/", '', $selected);
                     exit();
                 }
 
-                if (!in_array("actions", array_keys($service_data[$username][$service_id]["permissions"]))) { // Check to see if this service does not contain action permission data.
+                if (!in_array("action", array_keys($service_data[$username][$service_id]["permissions"]))) { // Check to see if this service does not contain action permission data.
                     $service_data[$username][$service_id]["permissions"]["action"] = array(); // Initialize this service's action permissions.
                 }
                 if (!in_array($permission, array_keys($service_data[$username][$service_id]["permissions"]["action"]))) {
@@ -192,7 +192,7 @@ $selected = preg_replace("/[^a-f0-9]/", '', $selected);
                 if ($action == "grant") {
                     $service_data[$username][$service_id]["permissions"]["action"][$permission] = true;
                 } else if ($action == "revoke") {
-                    $service_data[$username][$service_id]["permissions"]["action"][$permission] = false;
+                    unset($service_data[$username][$service_id]["permissions"]["action"][$permission]);
                 }
 
                 save_servicedata($service_data);

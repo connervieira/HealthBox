@@ -24,33 +24,30 @@ if ($associated_user == false) {
     echo "{'error': {'id': 'invalid_service', 'reason': 'not_found', 'description': 'The specified service identifier does not exist.'}}";
     exit();
 }
+if (!in_array("foods-delete", array_keys($services[$associated_user][$service_id]["permissions"]["action"])) or $services[$associated_user][$service_id]["permissions"]["action"]["foods-delete"] == false) { // Check to see if this service has permission to delete foods.
+    echo "{'error': {'id': 'invalid_service', 'reason': 'permission_denied', 'description': 'The specified service identifier does not have permission to delete foods.'}}";
+    exit();
+}
 
 include "./fooddata.php";
 $food_data = load_food();
 
 
 if ($food_id != preg_replace("/[^a-zA-Z0-9\-_]/", '', $food_id)) { // Check to see if the provided food_id contains disallowed values.
-    echo "{'error': {'id': 'invalid_id', 'reason': 'disallowed_characters', 'description': 'The submitted food_id is invalid because it contains disallowed characters.'}}";
+    echo "{'error': {'id': 'invalid_id', 'description': 'The submitted food_id is invalid because it contains disallowed characters.'}}";
+    echo "<p>The provided food ID contains disallowed characters.</p>";
     exit();
 } else if (strlen($food_id) >= 100) { // Check of the provided food_id is excessively long.
-    echo "{'error': {'id': 'invalid_id', 'reason': 'too_long', 'description': 'The submitted food_id is invalid because it is excessively long.'}}";
+    echo "{'error': {'id': 'invalid_id', 'description': 'The submitted food_id is invalid because it is excessively long.'}}";
     exit();
 }
 
-if (in_array($associated_user, array_keys($food_data["entries"])) and sizeof(array_keys($food_data["entries"][$associated_user]) > 0) { // Check to see if this ID exists in this users foods.
-    if (in_array($food_id, array_keys($food_data["entries"][$associated_user]))) { // Check to see if this ID exists in this users foods.
-        unset($food_data["entries"][$associated_user][$food_id]); // Remove this food.
-        if (sizeof($food_data["entries"][$associated_user]) <= 0) { // Check to see if this users list of foods is now empty.
-            unset($food_data["entries"][$associated_user]); // Remove this user from the food database.
-        }
-        save_food($food_data);
-        echo "{'success': {'description': 'A the \"" . $food_id . "\" food has been removed.'}}";
-    } else {
-        echo "{'error': {'id': 'invalid_id', 'reason': 'not_found', 'description': 'The submitted food_id does not exist in the database.'}}";
-        exit();
-    }
-    echo "<p>You have no foods in the food database.</p>";
-    echo "{'error': {'id': 'invalid_id', 'reason': 'not_found', 'description': 'There are no foods associated with this user in the database.'}}";
+if (!in_array($food_id, array_keys($food_data["entries"][$associated_user]["foods"]))) {
+    echo "{'error': {'id': 'invalid_id', 'description': 'The specified food_id does not exist in this user's food database.'}}";
     exit();
 }
+
+unset($food_data["entries"][$associated_user]["foods"][$food_id]);
+save_food($food_data);
+echo "{'success': {'description': 'A the \"" . $food_id . "\" food has be deleted.'}}";
 ?>
