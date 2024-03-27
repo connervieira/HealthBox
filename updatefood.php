@@ -66,11 +66,12 @@ if ($serving_unit != preg_replace("/[^a-z ]/", '', $serving_unit)) { // Check to
 }
 
 
-if (!in_array($associated_user, $food_data["entries"])) { // Check to see if this user doesn't yet exist in the food database.
+if (!in_array($associated_user, array_keys($food_data["entries"]))) { // Check to see if this user doesn't yet exist in the food database.
     $food_data["entries"][$associated_user] = array();
 }
-if (!in_array("foods", $food_data["entries"][$associated_user])) { // Check to see if this user doesn't yet exist in the food database.
-    $food_data["entries"][$associated_user] = array();
+if (!in_array("foods", array_keys($food_data["entries"][$associated_user]))) { // Check to see if this user doesn't yet exist in the food database.
+    echo "REGEN";
+    $food_data["entries"][$associated_user]["foods"] = array();
 }
 
 
