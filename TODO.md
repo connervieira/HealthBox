@@ -8,4 +8,4 @@ This is an informal to-do list for HealthBox. Is it not a comprehensive change-l
 - [X] Add permissions check to the food creation page.
 - [X] Add data fetching endpoint.
 - [X] Add food deletion endpoint.
-- [ ] Add data deletion endpoint.
+- [X] Add data deletion endpoint.
