@@ -9,3 +9,6 @@ This is an informal to-do list for HealthBox. Is it not a comprehensive change-l
 - [X] Add data fetching endpoint.
 - [X] Add food deletion endpoint.
 - [X] Add data deletion endpoint.
+- [X] Add food fetching endpoint.
+- [ ] Write food database documentation.
+- [ ] Remove foods associated with a service when it is deleted.

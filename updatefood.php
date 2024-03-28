@@ -34,18 +34,18 @@ $food_data = load_food();
 
 
 if ($food_id != preg_replace("/[^a-zA-Z0-9\-_]/", '', $food_id)) { // Check to see if the provided food_id contains disallowed values.
-    echo "{'error': {'id': 'invalid_id', 'description': 'The submitted food_id is invalid because it contains disallowed characters.'}}";
+    echo "{'error': {'id': 'invalid_id', 'reason': 'disallowed_characters', 'description': 'The submitted food_id is invalid because it contains disallowed characters.'}}";
     echo "<p>The provided food ID contains disallowed characters.</p>";
     exit();
 } else if (strlen($food_id) >= 100) { // Check of the provided food_id is excessively long.
-    echo "{'error': {'id': 'invalid_id', 'description': 'The submitted food_id is invalid because it is excessively long.'}}";
+    echo "{'error': {'id': 'invalid_id', 'reason': 'too_long', 'description': 'The submitted food_id is invalid because it is excessively long.'}}";
     exit();
 }
 if ($food_name != preg_replace("/[^a-zA-Z0-9\-_]/", '', $food_name)) { // Check to see if the provided food_name contains disallowed values.
-    echo "{'error': {'id': 'invalid_id', 'description': 'The submitted food_name is invalid because it contains disallowed characters.'}}";
+    echo "{'error': {'id': 'invalid_value', 'value': 'name', 'reason': 'disallowed_characters', 'description': 'The submitted food_name is invalid because it contains disallowed characters.'}}";
     exit();
 } else if (strlen($food_name) >= 100) { // Check of the provided food_name is excessively long.
-    echo "{'error': {'id': 'invalid_id', 'description': 'The submitted food_name is invalid because it is excessively long.'}}";
+    echo "{'error': {'id': 'invalid_value', 'value': 'name', 'reason': 'too_long', 'description': 'The submitted food_name is invalid because it is excessively long.'}}";
     exit();
 }
 

@@ -121,6 +121,8 @@ $health_data = load_healthdata();
                         }
                     }
 
+                    //TODO: Remove any foods associated with this service.
+
                     unset($service_data[$username][$service_id]); // Remove this service from the service database.
 
                     save_healthdata($health_data);
