@@ -23,9 +23,11 @@ if (in_array($username, $healthbox_config["auth"]["access"]["admin"]) == false) 
 
 include "./servicedata.php";
 include "./healthdata.php";
+include "./fooddata.php";
 
 $service_data = load_servicedata();
 $health_data = load_healthdata();
+$food_data = load_food();
 
 ?>
 <!DOCTYPE html>
@@ -91,6 +93,8 @@ $health_data = load_healthdata();
                 $service_data[$username][$new_key] = array(); // Initialize this new service.
                 $service_data[$username][$new_key]["name"] = $service_name; // Add the specified name of this service.
                 $service_data[$username][$new_key]["permissions"] = array(); // Initialize this service's permissions.
+                $service_data[$username][$new_key]["permissions"]["access"] = array();
+                $service_data[$username][$new_key]["permissions"]["actions"] = array();
 
                 save_servicedata($service_data);
                 echo "<p>A new service has been registered with the key '" . $new_key . "'</p>";
@@ -121,11 +125,17 @@ $health_data = load_healthdata();
                         }
                     }
 
-                    //TODO: Remove any foods associated with this service.
-
+                    // Remove any foods associated with the service.
+                    foreach (array_keys($food_data["entries"][$username]["foods"]) as $food) {
+                        if ($food_data["entries"][$username]["foods"][$food]["service"] == $service_id) {
+                            unset($food_data["entries"][$username]["foods"][$food]);
+                        }
+                    }
                     unset($service_data[$username][$service_id]); // Remove this service from the service database.
 
+
                     save_healthdata($health_data);
+                    save_food($food_data);
                     save_servicedata($service_data);
                     echo "<p>The specified service has been removed.</p>";
                 } else {

@@ -78,7 +78,7 @@ $selected_food = preg_replace("/[^a-zA-Z0-9 _\-]/", '', $_GET["selected"]); // S
 
 
                 $get_data = "?service=" . $service_id . "&id=" . $food_id . "&name=" . $food_name . "&servingsize=" . $serving_size . "&servingunit=" . $serving_unit;
-                foreach (array_keys($food_data["metadata"]["values"]["nutrients"]) as $nutrient) { // Iterate through each nutrient in the database.
+                foreach (array_keys($food_data["metadata"]["nutrients"]) as $nutrient) { // Iterate through each nutrient in the database.
                     $nutrient_input = $_POST[$nutrient];
                     if ($nutrient_input != "") { // Check to see if this nutrient has been filled out.
                         $get_data = $get_data . "&" . $nutrient . "=" . $nutrient_input;
@@ -101,12 +101,20 @@ $selected_food = preg_replace("/[^a-zA-Z0-9 _\-]/", '', $_GET["selected"]); // S
                     ?>
                 </select><br><br>
                 <label for="food">Food ID: </label><input type="text" id="food" name="food" max="100" autocomplete="off" pattern="[a-zA-Z0-9 _\-]{1,100}" value="<?php echo $selected_food; ?>" required><br>
-                <label for="name">Name: </label><input type="text" id="name" name="name" max="100" autocomplete="off" pattern="[a-zA-Z0-9 _\-]{1,100}" value="<?php echo $food_data["entries"][$username]["foods"][$selected_food]["name"]; ?>" required><br>
+                <?php
+                foreach (array_keys($food_data["metadata"]["values"]) as $value) {
+                    echo '<label for="' . $value . '">' . $food_data["metadata"]["values"][$value]["name"] . ': </label><input type="text" id="' . $value . '" name="' . $value . '" max="100" autocomplete="off" pattern="[a-zA-Z0-9 _\-]{1,100}" value="' . $food_data["entries"][$username]["foods"][$selected_food]["name"] . '"';
+                    if ($food_data["metadata"]["values"][$value]["required"] == true) {
+                        echo " required";
+                    }
+                    echo '><br>';
+                }
+                ?>
                 <label for="serving_size">Serving Size: </label><input type="number" id="serving_size" name="serving_size" autocomplete="off" min="0" max="10000" value="<?php echo $food_data["entries"][$username]["foods"][$selected_food]["serving"]["size"]; ?>" required><br>
                 <label for="serving_unit">Serving Unit: </label><input type="text" id="serving_unit" name="serving_unit" maxlength="20" pattern="[a-z ]{1,20}" value="<?php echo $food_data["entries"][$username]["foods"][$selected_food]["serving"]["unit"]; ?>" required><br><br>
                 <?php
-                foreach ($food_data["metadata"]["values"]["displayed_nutrients"] as $nutrient) {
-                    echo "<label for='" . $nutrient . "'>" . $food_data["metadata"]["values"]["nutrients"][$nutrient]["name"] . "</label>: <input id='" . $nutrient . "' name='" . $nutrient . "' min='0' value='" . $food_data["entries"][$username]["foods"][$selected_food]["nutrients"][$nutrient] . "' style='width:80px;' type='number'> " . $food_data["metadata"]["values"]["nutrients"][$nutrient]["unit"] . "<br>";
+                foreach ($food_data["metadata"]["displayed_nutrients"] as $nutrient) {
+                    echo "<label for='" . $nutrient . "'>" . $food_data["metadata"]["nutrients"][$nutrient]["name"] . "</label>: <input id='" . $nutrient . "' name='" . $nutrient . "' min='0' value='" . $food_data["entries"][$username]["foods"][$selected_food]["nutrients"][$nutrient] . "' style='width:80px;' type='number'> " . $food_data["metadata"]["nutrients"][$nutrient]["unit"] . "<br>";
                 } 
                 ?>
                 <input class="button" name="submit" id="submit" type="submit" value="Add">
