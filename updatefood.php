@@ -67,7 +67,7 @@ foreach (array_keys($food_data["metadata"]["values"]) as $value) {
             }
         }
     } else if ($food_data["metadata"]["values"][$value]["type"] == "bool") {
-        $values[$value] = strtolower(strval($values[$value]));
+        $values[$value] = strtolower(strval($values[$value]))[0];
         if (strlen($values[$value]) == 0) { // Check to see if this value is not set.
             if ($food_data["metadata"]["values"][$value]["required"] == true) { // Check to see if this value is required.
                 echo "{'error': {'id': 'missing_required_data', 'value': '" . $value . "', 'description': 'The submission is missing a required value for this food.'}}";

@@ -23,7 +23,7 @@ if ($associated_user == false) {
     echo "{'error': {'id': 'invalid_service', 'reason': 'not_found', 'description': 'The specified service identifier does not exist.'}}";
     exit();
 }
-if (!in_array("foods-fetch-list", array_keys($services[$associated_user][$service_id]["permissions"]["action"])) or $services[$associated_user][$service_id]["permissions"]["action"]["foods-fetch-list"] == false) { // Check to see if this service has permission to fetch food nutrients.
+if (!in_array("foods-fetch-all", array_keys($services[$associated_user][$service_id]["permissions"]["action"])) or $services[$associated_user][$service_id]["permissions"]["action"]["foods-fetch-list"] == false) { // Check to see if this service has permission to fetch food nutrients.
     echo "{'error': {'id': 'invalid_service', 'reason': 'permission_denied', 'description': 'The specified service identifier does not have permission to fetch food nutrient information.'}}";
     exit();
 }

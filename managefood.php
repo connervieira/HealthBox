@@ -1,4 +1,5 @@
 <?php
+
 include "./config.php";
 
 $force_login_redirect = true;
@@ -77,7 +78,13 @@ $selected_food = preg_replace("/[^a-zA-Z0-9 _\-]/", '', $_GET["selected"]); // S
 
 
 
-                $get_data = "?service=" . $service_id . "&id=" . $food_id . "&name=" . $food_name . "&servingsize=" . $serving_size . "&servingunit=" . $serving_unit;
+
+                $get_data = "?service=" . $service_id . "&id=" . $food_id . "&servingsize=" . $serving_size . "&servingunit=" . $serving_unit;
+                foreach (array_keys($food_data["metadata"]["values"]) as $value) { // Iterate through each custom value in the database.
+                    if (strlen($_POST["value>" . $value]) > 0) { // Check to see if this value is set.
+                        $get_data = $get_data . "&" . $value . "=" . $_POST["value>" . $value];
+                    }
+                }
                 foreach (array_keys($food_data["metadata"]["nutrients"]) as $nutrient) { // Iterate through each nutrient in the database.
                     $nutrient_input = $_POST[$nutrient];
                     if ($nutrient_input != "") { // Check to see if this nutrient has been filled out.
@@ -103,11 +110,24 @@ $selected_food = preg_replace("/[^a-zA-Z0-9 _\-]/", '', $_GET["selected"]); // S
                 <label for="food">Food ID: </label><input type="text" id="food" name="food" max="100" autocomplete="off" pattern="[a-zA-Z0-9 _\-]{1,100}" value="<?php echo $selected_food; ?>" required><br>
                 <?php
                 foreach (array_keys($food_data["metadata"]["values"]) as $value) {
-                    echo '<label for="' . $value . '">' . $food_data["metadata"]["values"][$value]["name"] . ': </label><input type="text" id="' . $value . '" name="' . $value . '" max="100" autocomplete="off" pattern="[a-zA-Z0-9 _\-]{1,100}" value="' . $food_data["entries"][$username]["foods"][$selected_food]["name"] . '"';
-                    if ($food_data["metadata"]["values"][$value]["required"] == true) {
-                        echo " required";
+                    echo '<label for="value>' . $value . '">' . $food_data["metadata"]["values"][$value]["name"] . ': </label>';
+                    if ($food_data["metadata"]["values"][$value]["type"] == "str") {
+                        echo '<input type="text" id="value>' . $value . '" name="value>' . $value . '" max="100" autocomplete="off" pattern="[a-zA-Z0-9 _\-]{1,100}" value="' . $food_data["entries"][$username]["foods"][$selected_food][$value] . '"';
+                        if ($food_data["metadata"]["values"][$value]["required"] == true) {
+                            echo " required";
+                        }
+                        echo '><br>';
+                    } else if ($food_data["metadata"]["values"][$value]["type"] == "bool") {
+                        echo '<select id="value>' . $value . '" name="value>' . $value . '">';
+                        if ($food_data["metadata"]["values"][$value]["required"] == false) {
+                            echo '    <option value="">Undefined</option>';
+                        }
+                        echo '    <option value="true"'; if ($food_data["entries"][$username]["foods"][$selected_food][$value] == true) { echo " selected"; } echo '>True</option>';
+                        echo '    <option value="false"'; if ($food_data["entries"][$username]["foods"][$selected_food][$value] == false) { echo " selected"; } echo '>False</option>';
+                        echo '</select><br>';
+                    } else {
+                        echo "<p>The type for this value is invalid</p>";
                     }
-                    echo '><br>';
                 }
                 ?>
                 <label for="serving_size">Serving Size: </label><input type="number" id="serving_size" name="serving_size" autocomplete="off" min="0" max="10000" value="<?php echo $food_data["entries"][$username]["foods"][$selected_food]["serving"]["size"]; ?>" required><br>

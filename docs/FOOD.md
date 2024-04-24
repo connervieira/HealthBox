@@ -19,6 +19,7 @@ Information here is found in the `metadata` section of the database, and applies
     - This does not determine which nutrients are active, only which are shown to users of the instance.
     - HealthBox clients can always display whatever nutrients they want to the user, regardless of what is configured on the server.
 - **values** determines what pieces of information are tracked for each food added to the database (in addition to nutrients).
+    - This can be used to track custom information about each food (whether the food is vegan, the precense of allergens, etc.)
     - Each entry in this section must have the following attributes:
         - **name**, which is simply a human-friendly name of the entry.
         - **type**, which is the type of value that this entry will hold.
@@ -26,6 +27,10 @@ Information here is found in the `metadata` section of the database, and applies
                 - "str" for a string of plain text.
                 - "bool" for a true or false value.
         - **required**, which is a boolean value that determines if this entry is required to be included when a new food is created.
+    - Values defined here are stored alongside other information within each food. As such, the following strings can not be used as keys for custom values, since they conflict with hard-coded values:
+        - "serving"
+        - "service"
+        - "nutrients"
 - **nutrients** contains a complete collection of all nutrients that this HealthBox instance will recognize.
     - You can feel free to add custom nutrients to this section, but be aware that removing existing nutrients may cause unexpected behavior.
 
@@ -79,8 +84,3 @@ These are the nutrients supported by HealthBox by default. The exact nutrients s
 - pantothenic-acid: Pantothenic Acid)
 - phosphorus: Phosphorus (milligrams)
 - selenium: Selenium (micrograms)
-
-
-
-
-- `X`: The amount of a particular nutrient of this food, where X is replaced with a nutrient ID. (See [/docs/FOOD.md](/docs/FOOD.md) for more information)
