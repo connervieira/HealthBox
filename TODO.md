@@ -10,6 +10,7 @@ This is an informal to-do list for HealthBox. Is it not a comprehensive change-l
 - [X] Add food deletion endpoint.
 - [X] Add data deletion endpoint.
 - [X] Add food fetching endpoint.
-- [ ] Write food database documentation.
+- [X] Write food database documentation.
+- [ ] Consider the type of data in the food update web interface.
 - [X] Remove foods associated with a service when it is deleted.
 - [ ] Create action permission check function.

@@ -48,7 +48,6 @@ if ($food_id != preg_replace("/[^a-zA-Z0-9\-_]/", '', $food_id)) { // Check to s
 
 
 foreach (array_keys($food_data["metadata"]["values"]) as $value) {
-    
     if ($food_data["metadata"]["values"][$value]["type"] == "str") {
         $values[$value] = strval($values[$value]);
         if (strlen($values[$value]) == 0) { // Check to see if this value is not set.
@@ -62,7 +61,7 @@ foreach (array_keys($food_data["metadata"]["values"]) as $value) {
             if ($values[$value] != preg_replace("/[^a-zA-Z0-9\-_]/", '', $values[$value])) { // Check to see if the provided value contains disallowed values.
                 echo "{'error': {'id': 'invalid_value', 'value': '" . $value . "', 'reason': 'disallowed_characters', 'description': 'The submitted " . $value . " is invalid because it contains disallowed characters.'}}";
                 exit();
-            } else if (strlen($values[$value]) >= 100) { // Check of the provided food_name is excessively long.
+            } else if (strlen($values[$value]) >= 100) { // Check of the provided value is excessively long.
                 echo "{'error': {'id': 'invalid_value', 'value': '" . $value . "', 'reason': 'too_long', 'description': 'The submitted " . $value . " is invalid because it is excessively long.'}}";
                 exit();
             }

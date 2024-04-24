@@ -158,6 +158,7 @@ To add or edit foods in the food database, use the **/healthbox/updatefood.php**
 - `name`: A human-readable name for the food.
 - `servingsize`: The number of units of this food per serving.
 - `servingunit`: The unit of measurement for servings of this food.
+- `Y`: The submission of a value for this food, where Y is replaced with the value ID as defined in the `metadata>values` section of the food database. (See [/docs/FOOD.md](/docs/FOOD.md) for more information)
 - `X`: The amount of a particular nutrient of this food, where X is replaced with a nutrient ID. (See [/docs/FOOD.md](/docs/FOOD.md) for more information)
 
 ### Example
@@ -171,6 +172,7 @@ http://localhost/healthbox/updatefood.php?
     service=6afb238acdb8888d42945cc3&
     &id=banana
     &name=Banana
+    &organic=true
     &servingsize=1
     &servingunit=fruit
     &calories=100
