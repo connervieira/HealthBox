@@ -36,14 +36,14 @@ Information here is found in the `metadata` section of the database, and applies
 
 ### Values
 
-These are the values supported by HealthBox by default. The exact values recognized by your particular instance of HealthBox can be found in the food database under the `metadata>values` section, or by viewing the `/healthboxviewnutrients.php` page in your browser while signed in to HealthBox.
+These are the values supported by HealthBox by default. The exact values recognized by your particular instance of HealthBox can be found in the food database under the `metadata>values` section, or by viewing the `/healthbox/viewfoodmetadata.php` page in your browser while signed in to HealthBox.
 - **name** (str): A human-friendly name for the food.
 - **brand** (str): The brand of the food.
 - **organic** (bool): Whether or not the food is classified as organic.
 
 ### Nutrients
 
-These are the nutrients supported by HealthBox by default. The exact nutrients supported by your particular instance of HealthBox can be found in the food database under the `metadata>nutrients` section, or by viewing the `/healthbox/viewnutrients.php` page in your browser while signed in to HealthBox.
+These are the nutrients supported by HealthBox by default. The exact nutrients supported by your particular instance of HealthBox can be found in the food database under the `metadata>nutrients` section, or by viewing the `/healthbox/viewfoodmetadata.php` page in your browser while signed in to HealthBox.
 - calories: Calories (kilocalories)
 - fat-total: Total Fat (grams)
 - fat-saturated: Saturated Fat (grams)

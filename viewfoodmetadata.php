@@ -63,8 +63,8 @@ $food_data = load_food();
                 <p style="margin-top:0px;">This is a comprehensive list of nutrients supported by this instance of HealthBox.</p>
                 <?php
                 foreach (array_keys($food_data["metadata"]["nutrients"]) as $nutrient) {
-                    echo "<h3 style='margin-bottom:0px;'>" . $food_data["metadata"]["nutrients"][$nutrient]["name"]. "</h3>";
-                    echo "<p style='margin-top:0px;'>" . $nutrient . " - " . $food_data["metadata"]["nutrients"][$nutrient]["unit"] . "</p>";
+                    echo "<h4 style='margin-bottom:0px;'>" . $food_data["metadata"]["nutrients"][$nutrient]["name"]. "</h4>";
+                    echo "<p style='margin-top:0px;'><b>" . $nutrient . "</b>: " . $food_data["metadata"]["nutrients"][$nutrient]["unit"] . "</p>";
                 }
                 ?>
             </div>
