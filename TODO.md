@@ -14,4 +14,4 @@ This is an informal to-do list for HealthBox. Is it not a comprehensive change-l
 - [X] Consider the type of data in the food update web interface.
 - [X] Remove foods associated with a service when it is deleted.
 - [X] Rename `viewnutrients.php` file, and updated FOODS.md documentation.
-- [ ] Create action permission check function.
+- [X] Create action permission check function.

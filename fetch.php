@@ -47,13 +47,13 @@ if (in_array($metric_id, array_keys($metrics[$category_id]["metrics"])) == false
 
 
 // Verify that the permissions of the specified service ID allow it to write to this metric.
-if (in_array("data-readall", array_keys($services[$associated_user][$service_id]["permissions"]["action"])) and $services[$associated_user][$service_id]["permissions"]["action"]["data-readall"] == true) { // Check to see if this service has the override permission to read all metrics.
+if (check_permissions_action($service_id, "data-readall", $services) == true) {
     $access = true;
 } else { // Otherwise, check to see if this service has permission to read this specific metric.
     $access = check_permissions_access($service_id, $category_id, $metric_id, "r", $services);
 }
 if ($access == false) {
-    echo "{'error': {'id': 'permission_denied', 'description': 'The specified service does not have permission to read the specified metric.'}}";
+    echo "{'error': {'id': 'invalid_service', 'reason': 'permission_denied', 'description': 'The specified service identifier does not have permission to read the specified metric.'}}";
     exit();
 }
 

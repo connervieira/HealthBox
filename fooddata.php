@@ -71,7 +71,7 @@ if (!function_exists("load_food")) {
             $food_database = json_decode(file_get_contents($food_database_filepath), true);
             return $food_database;
         } else {
-            echo "<p>Failed to intialized food database.";
+            echo "<p>Failed to intialize food database.";
         }
     }
 }

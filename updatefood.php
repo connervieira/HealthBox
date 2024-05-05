@@ -115,13 +115,13 @@ if (!in_array("foods", array_keys($food_data["entries"][$associated_user]))) { /
 
 if (in_array($food_id, array_keys($food_data["entries"][$associated_user]["foods"]))) { // Check to see if this food already exists.
     // Check to see if this service has permission to overwrite foods.
-    if (!in_array("permissions", array_keys($services[$associated_user][$service_id])) or !in_array("action", array_keys($services[$associated_user][$service_id]["permissions"])) or !in_array("foods-edit", array_keys($services[$associated_user][$service_id]["permissions"]["action"])) or $services[$associated_user][$service_id]["permissions"]["action"]["foods-edit"] == false) {
+    if (check_permissions_action($service_id, "foods-edit", $services) == false) {
         echo "{'error': {'id': 'invalid_service', 'reason': 'permission_denied', 'description': 'The specified service identifier does not have permission to edit foods.'}}";
         exit();
     }
 } else {
     // Check to see if this service has permission to create new foods.
-    if (!in_array("foods-add", array_keys($services[$associated_user][$service_id]["permissions"]["action"])) or $services[$associated_user][$service_id]["permissions"]["action"]["foods-add"] == false) {
+    if (check_permissions_action($service_id, "foods-add", $services) == false) {
         echo "{'error': {'id': 'invalid_service', 'reason': 'permission_denied', 'description': 'The specified service identifier does not have permission to add foods.'}}";
         exit();
     }
