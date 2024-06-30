@@ -14,7 +14,7 @@ if (!function_exists("load_metrics")) { // Check to see if the 'load_metrics' fu
                 "physical": {
                     "name": "Physical",
                     "metrics": {
-                        "steps": {"name": "Steps", "description": "The number of steps taken over a given interval", "tags": [], "validation": ["int", "start_time", "end_time"], "requirements": [true, true, true], "keys": ["steps_count", "start_time", "end_time"]},
+                        "steps": {"name": "Steps", "tags": ["exercise"], "description": "The number of steps taken over a given interval", "tags": [], "validation": ["int", "start_time", "end_time"], "requirements": [true, true, true], "keys": ["steps_count", "start_time", "end_time"]},
                         "active_calories": {"name": "Active Calories", "tags": [], "description": "Calories burned above the resting baseline over a given interval", "validation": ["float", "start_time", "end_time"], "requirements": [true, true, true], "keys": ["calories", "start_time", "end_time"]},
                         "resting_calories": {"name": "Resting Calories", "tags": [], "description": "How much energy is burned while resting over a given interval", "validation": ["float", "start_time", "end_time"], "requirements": [true, true, true], "keys": ["calories", "start_time", "end_time"]},
                         "distance_pedestrian": {"name": "On Foot Distance", "tags": ["exercise"], "description": "Kilometers traveled through walking, running, or otherwise on foot", "validation": ["float", "start_time", "end_time"], "requirements": [true, true, true], "keys": ["distance", "start_time", "end_time"]},
@@ -40,7 +40,8 @@ if (!function_exists("load_metrics")) { // Check to see if the 'load_metrics' fu
                         "mdq": {"name": "MDQ Score (Bipolar Test)", "tags": [], "description": "MDQ scores can be an indicator of bipolar disorder, and its severity", "validation": ["int", "datetime"], "requirements": [true, true], "keys": ["score", "time"]},
                         "asrs": {"name": "ASRS Score (ADHD Test)", "tags": [], "description": "ASRS scores can be an indicator of ADHD, and its severity", "validation": ["int", "datetime"], "requirements": [true, true], "keys": ["score", "time"]},
                         "mindful_minutes": {"name": "Mindful Minutes", "tags": [], "description": "Minutes spent being mindful of thoughts, emotions, and feelings", "validation": ["short_string", "start_time", "end_time"], "requirements": [true, true, true], "keys": ["type_of_mindfulness", "start_time", "end_time"]},
-                        "mood": {"name": "Mood", "tags": [], "description": "The current mood at a point in time", "validation": ["short_string", "datetime"], "requirements": [true, true], "keys": ["mood", "time"]},
+                        "mood": {"name": "Mood", "tags": [], "description": "The current mood at a point in time, quantified as a whole number between -5 and 5, ranging from negative to positive emotional state.", "validation": ["mood", "datetime"], "requirements": [true, true], "keys": ["mood", "time"]},
+                        "emotion": {"name": "Emotion", "tags": [], "description": "An emotion experienced at a point in time", "validation": ["short_string", "datetime"], "requirements": [true, true], "keys": ["emotion", "time"]},
                         "sexual_activity": {"name": "Sexual Activity", "tags": [], "description": "Sexual activity with a partner", "validation": ["boolean", "datetime"], "requirements": [false, true], "keys": ["safe", "time"]}
                     }
                 },
@@ -118,6 +119,7 @@ if (!function_exists("validate_metrics")) { // Check to see if the 'validate_met
         # side: A 1 character string: L or R
         # foodid: A food ID that exists in the food database.
         # mealid: A string that combines a date (YYYY-MM-DD) and meal number, where 0 is a snack (1 for breakfast, 2 for lunch, 3 for dinner) separated by a comma. For example, dinner on May 5th would be "2024-05-21,3".
+        # mood: An integer number ranging from -5 to 5.
 
 
         $valid = true; // Assume the metric data is valid until an invalid field is found.

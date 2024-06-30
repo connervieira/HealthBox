@@ -14,20 +14,20 @@ $end_time = $_GET["end"];
 // Authenticate using provided service ID.
 $service_id = strtolower($service_id);
 if ($service_id != preg_replace("/[^a-f0-9]/", '', $service_id)) { // Check to see if the service identifier contains disallowed characters.
-    echo "{'error': {'id': 'invalid_service', 'reason': 'disallowed_characters', 'description': 'The service identifier contains invalid characters.'}}";
+    echo "{\"error\": {\"id\": \"invalid_service\", \"reason\": \"disallowed_characters\", \"description\": \"The service identifier contains invalid characters.\"}}";
     exit();
 }
 if (strlen($service_id) > 100) { // Check to see if the service identifier is excessively long.
-    echo "{'error': {'id': 'invalid_service', 'reason': 'too_long', 'description': 'The service identifier is excessively long.'}}";
+    echo "{\"error\": {\"id\": \"invalid_service\", \"reason\": \"too_long\", \"description\": \"The service identifier is excessively long.\"}}";
     exit();
 } else if (strlen($service_id) < 8) {
-    echo "{'error': {'id': 'invalid_service', 'reason': 'too_short', 'description': 'The service identifier is too short.'}}";
+    echo "{\"error\": {\"id\": \"invalid_service\", \"reason\": \"too_short\", \"description\": \"The service identifier is too short.\"}}";
     exit();
 }
 $services = load_servicedata();
 $associated_user = find_serviceid($service_id, $services); // Search for the provided service ID in the service database.
 if ($associated_user == false) {
-    echo "{'error': {'id': 'invalid_service', 'reason': 'not_found', 'description': 'The specified service identifier does not exist.'}}";
+    echo "{\"error\": {\"id\": \"invalid_service\", \"reason\": \"not_found\", \"description\": \"The specified service identifier does not exist.\"}}";
     exit();
 }
 
@@ -37,11 +37,11 @@ $health_data = load_healthdata();
 
 
 if (in_array($category_id, array_keys($metrics)) == false) { // Check to see if the submitted category ID does not exist in the metrics database.
-    echo "{'error': {'id': 'invalid_category', 'description': 'The specified category ID does not exist.'}}";
+    echo "{\"error\": {\"id\": \"invalid_category\", \"description\": \"The specified category ID does not exist.\"}}";
     exit();
 }
 if (in_array($metric_id, array_keys($metrics[$category_id]["metrics"])) == false) { // Check to see if the submitted metric ID does not exist in the metrics database.
-    echo "{'error': {'id': 'invalid_metric', 'description': 'The specified metric ID does not exist.'}}";
+    echo "{\"error\": {\"id\": \"invalid_metric\", \"description\": \"The specified metric ID does not exist.\"}}";
     exit();
 }
 
@@ -53,7 +53,7 @@ if (check_permissions_action($service_id, "data-readall", $services) == true) {
     $access = check_permissions_access($service_id, $category_id, $metric_id, "r", $services);
 }
 if ($access == false) {
-    echo "{'error': {'id': 'invalid_service', 'reason': 'permission_denied', 'description': 'The specified service identifier does not have permission to read the specified metric.'}}";
+    echo "{\"error\": {\"id\": \"invalid_service\", \"reason\": \"permission_denied\", \"description\": \"The specified service identifier does not have permission to read the specified metric.\"}}";
     exit();
 }
 
@@ -77,10 +77,10 @@ if ($start_time == 0 and $end_time == 0) {
     $datapoints_to_display = array_keys($health_data[$associated_user][$category_id][$metric_id]);
 } else {
     if ($start_time <= 0) {
-        echo "{'error': {'id': 'invalid_start_time', 'description': 'The start time must be a positive number.'}}";
+        echo "{\"error\": {\"id\": \"invalid_start_time\", \"description\": \"The start time must be a positive number.\"}}";
     }
     if ($end_time <= $start_time) {
-        echo "{'error': {'id': 'invalid_end_time', 'description': 'The end time must occur after the start time.'}}";
+        echo "{\"error\": {\"id\": \"invalid_end_time\", \"description\": \"The end time must occur after the start time.\"}}";
     }
 
     $all_datapoint_keys = array_keys($health_data[$associated_user][$category_id][$metric_id]);
