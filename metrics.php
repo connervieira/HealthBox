@@ -41,7 +41,8 @@ if (!function_exists("load_metrics")) { // Check to see if the 'load_metrics' fu
                         "asrs": {"name": "ASRS Score (ADHD Test)", "tags": [], "description": "ASRS scores can be an indicator of ADHD, and its severity", "validation": ["int", "datetime"], "requirements": [true, true], "keys": ["score", "time"]},
                         "mindful_minutes": {"name": "Mindful Minutes", "tags": [], "description": "Minutes spent being mindful of thoughts, emotions, and feelings", "validation": ["short_string", "start_time", "end_time"], "requirements": [true, true, true], "keys": ["type_of_mindfulness", "start_time", "end_time"]},
                         "mood": {"name": "Mood", "tags": [], "description": "The current mood at a point in time", "validation": ["short_string", "datetime"], "requirements": [true, true], "keys": ["mood", "time"]},
-                        "sexual_activity": {"name": "Sexual Activity", "tags": [], "description": "Sexual activity with a partner", "validation": ["boolean", "datetime"], "requirements": [false, true], "keys": ["safe", "time"]}
+                        "sexual_activity": {"name": "Sexual Activity", "tags": [], "description": "Sexual activity with a partner", "validation": ["boolean", "datetime"], "requirements": [false, true], "keys": ["safe", "time"]},
+                        "addictive_behavior": {"name": "Addictive Behavior", tags": [], "description": "Harmful behavior performed compulsively", "validation": ["short_string", "float"], "requirements": [true, false], "keys": ["name","severity"]}
                     }
                 },
                 "measurements": {
