@@ -42,6 +42,29 @@ function find_serviceid($service_id_search, $service_data) {
     return false;
 }
 
+
+function check_permissions_action($service, $action, $data) {
+    $user = find_serviceid($service, $data);
+    if ($user !== false) { // Check to make sure an associated user was found.
+        if (in_array("permissions", array_keys($data[$user][$service]))) {
+            if (in_array("action", array_keys($data[$user][$service]["permissions"]))) {
+                if (in_array($action, array_keys($data[$user][$service]["permissions"]["action"])) and $data[$user][$service]["permissions"]["action"][$action] == true) { // Check to see if this service has permission to delete foods.
+                    return true;
+                } else { // Permission denied.
+                    return false;
+                }
+            } else { // No actions set.
+                return false;
+            }
+        } else { // No permissions set
+            return false;
+        }
+    } else { // The specified service does not exist.
+        echo "The specified service ID could not be found.";
+        return false;
+    }
+}
+
 function check_permissions_access($service, $category, $metric, $action, $data) {
     $user = find_serviceid($service, $data);
     if ($user !== false) { // Check to make sure an associated user was found.

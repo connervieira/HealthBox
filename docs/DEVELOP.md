@@ -46,7 +46,7 @@ The `id` field is included with all error responses, but the `reason` and `value
     - `too_long`: The service identifier is longer than expected.
     - `too_short`: The service identifier is shorter than expected.
     - `not_found`: The service identifier does not exist in the database.
-- `permission_denied`: The given service ID is not permitted to access the given metric.
+    - `permission_denied`: The given service ID is not permitted to access the given metric or action.
 - `invalid_category`: The given category ID does not exist in the database.
 - `invalid_metric`: The given metric ID does not exist in the database.
 - `invalid_id`: The given identifier is invalid.
