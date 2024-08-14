@@ -273,10 +273,10 @@ for ($i = 0; $i < sizeof($submission_data); $i++) { // Validate each submitted v
             exit();
         }
         $submission_data[$key] = intval($submission_data[$key]); // Convert this value to an integer.
-        if ($submission_data[$key] <= -5) {
+        if ($submission_data[$key] < -5) {
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $key . "\", \"description\": \"The data submitted for " . $key . " is invalid because it is below -5.\"}}";
             exit();
-        } else if ($submission_data[$key] >= 5) {
+        } else if ($submission_data[$key] > 5) {
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $key . "\", \"description\": \"The data submitted for " . $key . " is invalid because it is above 5.\"}}";
             exit();
         }

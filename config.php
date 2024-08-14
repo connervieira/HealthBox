@@ -40,4 +40,11 @@ if (!function_exists("save_config")) { // Check to see if the save_config functi
     }
 }
 
+if (!function_exists("is_json")) { // Check to see if the is_json function needs to be created.
+    function is_json($string) {
+        json_decode($string);
+        return (json_last_error() == JSON_ERROR_NONE);
+    }
+}
+
 ?>

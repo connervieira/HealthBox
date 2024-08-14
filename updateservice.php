@@ -89,14 +89,6 @@ $selected = preg_replace("/[^a-f0-9]/", '', $selected);
 
                 $permission = preg_replace("/[^a-z]/", '', $_POST["permission"]);
                 $action = preg_replace("/[^a-z]/", '', $_POST["action"]);
-                if ($permission !== "read" and $permission !== "write") {
-                    echo "<p>The specified permission is invalid.</p>";
-                    exit();
-                }
-                if ($action !== "grant" and $action !== "revoke") {
-                    echo "<p>The specified action is invalid.</p>";
-                    exit();
-                }
 
                 if (!in_array("access", array_keys($service_data[$username][$service_id]["permissions"]))) { // Check to see if this service does not contain access permission data.
                     $service_data[$username][$service_id]["permissions"]["access"] = array(); // Initialize this service's access permissions.
@@ -112,12 +104,16 @@ $selected = preg_replace("/[^a-f0-9]/", '', $selected);
                         $service_data[$username][$service_id]["permissions"]["access"][$category][$metric]["r"] = true;
                     } else if ($action == "revoke") {
                         $service_data[$username][$service_id]["permissions"]["access"][$category][$metric]["r"] = false;
+                    } else {
+                        echo "<p>Unrecognized action.</p>";
                     }
                 } else if ($permission == "write") {
                     if ($action == "grant") {
                         $service_data[$username][$service_id]["permissions"]["access"][$category][$metric]["w"] = true;
                     } else if ($action == "revoke") {
                         $service_data[$username][$service_id]["permissions"]["access"][$category][$metric]["w"] = false;
+                    } else {
+                        echo "<p>Unrecognized action.</p>";
                     }
                 }
 
@@ -127,6 +123,9 @@ $selected = preg_replace("/[^a-f0-9]/", '', $selected);
                         unset($service_data[$username][$service_id]["permissions"]["access"][$category]);
                     }
                 }
+
+                echo "<pre>";
+                print_r($service_data);
 
                 save_servicedata($service_data);
                 echo "<p>Successfully updated permissions.</p>";
@@ -224,21 +223,25 @@ $selected = preg_replace("/[^a-f0-9]/", '', $selected);
                     echo "<div class='buffer'>";
                     echo "<h4><a href='?selected=$service'>" . $service . "</a></h4>";
                     echo "<h5>Access</h5>";
-                    foreach (array_keys($service_data[$username][$service]["permissions"]["access"]) as $category) {
-                        foreach (array_keys($service_data[$username][$service]["permissions"]["access"][$category]) as $metric) {
-                            echo "<p style='margin-top:2px;margin-bottom:2px;'><b>$category>$metric</b> -";
-                            if ($service_data[$username][$service]["permissions"]["access"][$category][$metric]["r"] == true) {
-                                echo " read";
+                    if (in_array("access", array_keys($service_data[$username][$service]["permissions"]))) {
+                        foreach (array_keys($service_data[$username][$service]["permissions"]["access"]) as $category) {
+                            foreach (array_keys($service_data[$username][$service]["permissions"]["access"][$category]) as $metric) {
+                                echo "<p style='margin-top:2px;margin-bottom:2px;'><b>$category>$metric</b> -";
+                                if ($service_data[$username][$service]["permissions"]["access"][$category][$metric]["r"] == true) {
+                                    echo " read";
+                                }
+                                if ($service_data[$username][$service]["permissions"]["access"][$category][$metric]["w"] == true) {
+                                    echo " write";
+                                }
+                                echo "</p>";
                             }
-                            if ($service_data[$username][$service]["permissions"]["access"][$category][$metric]["w"] == true) {
-                                echo " write";
-                            }
-                            echo "</p>";
                         }
                     }
                     echo "<br><h5>Actions</h5>";
-                    foreach (array_keys($service_data[$username][$service]["permissions"]["action"]) as $action) {
-                        echo "<p style='margin-top:2px;margin-bottom:2px;'><b>$action</b></p>";
+                    if (in_array("action", array_keys($service_data[$username][$service]["permissions"]))) {
+                        foreach (array_keys($service_data[$username][$service]["permissions"]["action"]) as $action) {
+                            echo "<p style='margin-top:2px;margin-bottom:2px;'><b>$action</b></p>";
+                        }
                     }
                     echo "</div>";
                 }

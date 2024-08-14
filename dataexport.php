@@ -29,14 +29,26 @@ $health_data = load_healthdata();
 
 
 $export_data = array();
-if (in_array($username, array_keys($food_data["entries"]))) { $export_data["food"] = $food_data["entries"][$username];
+if (in_array($username, array_keys($food_data["entries"]))) { $export_data["food"] = $food_data["entries"][$username]["foods"];
 } else { $export_data["food"] = array(); }
 
 if (in_array($username, array_keys($health_data))) { $export_data["data"] = $health_data[$username];
 } else { $export_data["data"] = array(); }
 
-echo "<pre>";
-echo json_encode($export_data, (JSON_PRETTY_PRINT));
-echo "</pre>";
+
+$output_file_path = "/dev/shm/HealthBoxExport_" . $username . "_" . date("Ymd_His") . ".json";
+
+$file = fopen($output_file_path, "w");
+fwrite($file, json_encode($export_data));
+fclose($file);
+
+header('Content-Type: application/octet-stream');
+header('Content-Disposition: attachment; filename=' . basename($output_file_path));
+header('Expires: 0');
+header('Cache-Control: must-revalidate');
+header('Pragma: public');
+header('Content-Length: ' . filesize($output_file_path));
+readfile($output_file_path);
+exit;
 
 ?>

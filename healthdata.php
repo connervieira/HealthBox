@@ -52,4 +52,23 @@ function delete_datapoint($health_data, $user, $category, $metric, $datapoint) {
     return $health_data;
 }
 
+function clean_database($health_data) {
+    foreach (array_keys($health_data) as $user) {
+        foreach (array_keys($health_data[$user]) as $category) {
+            foreach (array_keys($health_data[$user][$category]) as $metric) {
+                if (sizeof($health_data[$user][$category][$metric]) == 0) {
+                    unset($health_data[$user][$category][$metric]);
+                }
+            }
+            if (sizeof($health_data[$user][$category]) == 0) {
+                unset($health_data[$user][$category]);
+            }
+        }
+        if (sizeof($health_data[$user]) == 0) {
+            unset($health_data[$user]);
+        }
+    }
+    return $health_data;
+}
+
 ?>
