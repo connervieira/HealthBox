@@ -114,6 +114,8 @@ This section contains separate instructions for migrating between two externally
     - If the import process fails, here are common reasons for errors:
         - If you tampered with the exported JSON file between downloading it and restoring it on the new instance, then it's possible the data is malformed. HealthBox will only accept imported data that meets the same validation requirements as normal submissions.
         - If the initial instance makes use of custom health metrics or food nutrients, then the new instance needs to support the same values.
+    - If you see a message below "Import success" informing you that one or more services were replaced, then it's likely that you've improperly copied the services over in the previous steps.
+        - This message means that one or more entries are no longer associated with the services that originally submitted them, and are instead associated with the service used to import the back-up.
 24. Return to the console logged into the server hosting HealthBox (SSH, FTP, physical access, etc.)
 25. Navigate to the HealthBox data directory.
     - This directory is set to `/var/www/protected/healthbox/` by default.

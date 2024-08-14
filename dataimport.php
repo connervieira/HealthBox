@@ -140,6 +140,8 @@ function validate_food($food) {
             $uploaded_file_path = $_FILES['file']['tmp_name']; // This is the uploaded file, containing data to import.
             $uploaded_file_size = filesize($uploaded_file_path); // Calculate the file size of the uploaded file.
 
+            $services_replaced = array(); // This will keep track of each service replaced (services that don't exist on this instance). 
+
             if ($uploaded_file_size > 0) { // Check to see if a file has been uploaded.
                 if (check_permissions_action($service, "data-writeall", $service_data) and check_permissions_action($service, "foods-add", $service_data) and check_permissions_action($service, "foods-edit", $service_data)) { // Check to make sure the selected service has all required permissions to import data.
                     if ($uploaded_file_size < 10 * 1000 * 1000) { // Check to make sure the uploaded file is less than 10MB.
@@ -155,6 +157,7 @@ function validate_food($food) {
                                         $service_associated_user = find_serviceid($imported_data["food"][$food]["service"], $service_data);
                                         if ($service_associated_user == $username) { // Leave the service identifier unchanged, since it matches a service associated with this user.
                                         } else { // This service ID was either not found, or is not associated with this user.
+                                            array_push($services_replaced, $imported_data["food"][$food]["service"]);
                                             $imported_data["food"][$food]["service"] = $service; // Replace the service associated with this data with the service used to import the data.
                                         }
                                         if (validate_food($imported_data["food"][$food]) == false) {
@@ -181,6 +184,7 @@ function validate_food($food) {
                                                                 $service_associated_user = find_serviceid($imported_data["data"][$category][$metric][$datapoint]["service"], $service_data);
                                                                 if ($service_associated_user == $username) { // Leave the service identifier unchanged, since it matches a service associated with this user.
                                                                 } else { // This service ID was either not found, or is not associated with this user.
+                                                                    array_push($services_replaced, $imported_data["data"][$category][$metric][$datapoint]["service"]);
                                                                     $imported_data["data"][$category][$metric][$datapoint]["service"] = $service; // Replace the service associated with this data with the service used to import the data.
                                                                 }
                                                                 $submission_data = $imported_data["data"][$category][$metric][$datapoint]["data"];
@@ -417,9 +421,16 @@ function validate_food($food) {
                                         }
                                         $health_data = clean_database($health_data); // Remove any empty metrics, categories, and users.
 
+                                        $services_replaced = array_unique($services_replaced);
+
                                         save_food($food_data);
                                         save_healthdata($health_data);
                                         echo "<p>Import success</p>";
+                                        if (sizeof($services_replaced) > 1) {
+                                            echo "<p>" . strval(sizeof($services_replaced)) . " services were not present on this instance and were replaced.</p>";
+                                        } else if (sizeof($services_replaced) > 0) {
+                                            echo "<p>" . strval(sizeof($services_replaced)) . " service was present on this instance and was replaced.</p>";
+                                        }
                                     } else {
                                         echo "<p>Import failed</p>";
                                     }
