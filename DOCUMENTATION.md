@@ -23,3 +23,8 @@ To learn more about how to use HealthBox, see [docs/USAGE.md](docs/USAGE.md).
 ## Development
 
 Once you're familiar with how HealthBox works, you may want to try developing your own services for it. To learn more about the process of integrating external services with HealthBox, see [docs/DEVELOP.md](docs/DEVELOP.md).
+
+
+## Migration
+
+If you wish to transfer data between HealthBox instances (restoring a back-up to the same instance, copying between two external instances, or copying from an external instance to a self-hosted instance), see [docs/MIGRATION.md](docs/MIGRATION.md).
