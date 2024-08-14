@@ -58,7 +58,7 @@ foreach (array_keys($food_data["metadata"]["values"]) as $value) {
                 unset($values[$value]);
             }
         } else { // This value is set.
-            if ($values[$value] != preg_replace("/[^a-zA-Z0-9\-_]/", '', $values[$value])) { // Check to see if the provided value contains disallowed values.
+            if ($values[$value] != preg_replace("/[^a-zA-Z0-9\-_ \']/", '', $values[$value])) { // Check to see if the provided value contains disallowed values.
                 echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $value . "\", \"reason\": \"disallowed_characters\", \"description\": \"The submitted " . $value . " is invalid because it contains disallowed characters.\"}}";
                 exit();
             } else if (strlen($values[$value]) >= 100) { // Check of the provided value is excessively long.
@@ -82,6 +82,33 @@ foreach (array_keys($food_data["metadata"]["values"]) as $value) {
                 $values[$value] = false;
             } else {
                 echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $value . "\", \"description\": \"The submitted " . $value . " is invalid because it is not a boolean.\"}}";
+                exit();
+            }
+        }
+    } else if ($food_data["metadata"]["values"][$value]["type"] == "float") {
+        if (strlen($values[$value]) == 0) { // Check to see if this value is not set.
+            if ($food_data["metadata"]["values"][$value]["required"] == true) { // Check to see if this value is required.
+                echo "{\"error\": {\"id\": \"missing_required_data\", \"value\": \"" . $value . "\", \"description\": \"The submission is missing a required value for this food.\"}}";
+                exit();
+            } else { // Otherwise, this value is not required.
+                unset($values[$value]);
+            }
+        } else { // This value is set.
+            $values[$value] = floatval($values[$value]);
+        }
+    } else if ($food_data["metadata"]["values"][$value]["type"] == "int") {
+        if (strlen($values[$value]) == 0) { // Check to see if this value is not set.
+            if ($food_data["metadata"]["values"][$value]["required"] == true) { // Check to see if this value is required.
+                echo "{\"error\": {\"id\": \"missing_required_data\", \"value\": \"" . $value . "\", \"description\": \"The submission is missing a required value for this food.\"}}";
+                exit();
+            } else { // Otherwise, this value is not required.
+                unset($values[$value]);
+            }
+        } else { // This value is set.
+            if (floatval($food_data["metadata"]["values"]) == round(floatval($food_data["metadata"]["values"]))) { // Check to make sure this value is a whole number.
+                $values[$value] = intval($values[$value]);
+            } else {
+                echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $value . "\", \"description\": \"The submitted " . $value . " is invalid because it is not a whole number.\"}}";
                 exit();
             }
         }
@@ -145,8 +172,11 @@ foreach (array_keys($food_data["metadata"]["nutrients"]) as $nutrient) { // Iter
         $nutrient_input = floatval($nutrient_input);
         if ($nutrient_input < 0) {
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $nutrient . "\", \"description\": \"The submitted value for \"" . $nutrient . "\" is invalid because it is a negative number.\"}}";
+        } else if ($nutrient_input > 1000000) {
+            echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $nutrient . "\", \"description\": \"The submitted value for \"" . $nutrient . "\" is invalid because it is excessively large.\"}}";
+        } else {
+            $food_data["entries"][$associated_user]["foods"][$food_id]["nutrients"][$nutrient] = $nutrient_input;
         }
-        $food_data["entries"][$associated_user]["foods"][$food_id]["nutrients"][$nutrient] = $nutrient_input;
     }
 }
 
