@@ -1,8 +1,11 @@
 <?php
 include "./config.php";
 
-$force_login_redirect = true;
 include $healthbox_config["auth"]["provider"]["core"];
+if ($_SESSION['authid'] !== "dropauth") { // Check to see if the user is not signed in.
+    header("Location: ./landing.php");
+    exit();
+}
 
 if (in_array($username, $healthbox_config["auth"]["access"]["admin"]) == false) {
     if ($healthbox_config["auth"]["access"]["mode"] == "whitelist") {

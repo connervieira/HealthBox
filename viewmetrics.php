@@ -1,13 +1,12 @@
 <?php
 include "./config.php";
 
-$force_login_redirect = true;
 include $healthbox_config["auth"]["provider"]["core"];
 
 if (in_array($username, $healthbox_config["auth"]["access"]["admin"]) == false) {
     if ($healthbox_config["auth"]["access"]["mode"] == "whitelist") {
         if (in_array($username, $healthbox_config["auth"]["access"]["whitelist"]) == false) { // Check to make sure this user is not in blacklist.
-            echo "<p>You are not permitted to access this utility.</p>";
+            echo "<p>This HealthBox instance is operating in whitelist mode, which means only authorized users can view this page.</p>";
             exit();
         }
     } else if ($healthbox_config["auth"]["access"]["mode"] == "blacklist") {
@@ -62,6 +61,7 @@ $metrics = load_metrics();
                     <li><b>side</b>: A 1 character string: L or R</li>
                     <li><b>foodid</b>: A food ID that exists in the food database.</li>
                     <li><b>mealid</b>: A string that combines a date (YYYY-MM-DD) and meal number separated by a comma, where 0 is a snack (not associated with a specific meal), 1 for breakfast, 2 for lunch, 3 for dinner, etc. For example, dinner on May 5th would be "2024-05-21,3".</li>
+                    <li><b>mood</b>: An integer ranging from -5 to 5, indicating general mood from negative to positive.</p>
                 </ul>
 
 
