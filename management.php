@@ -39,8 +39,8 @@ if (in_array($username, $healthbox_config["auth"]["access"]["admin"]) == false) 
 
             <hr>
             <h3>Manage Data</h3><br>
-            <a class="button" role="button" href="./dataexport.php">Export Data</a>
-            <a class="button" role="button" href="./dataimport.php">Import Data</a>
+            <a class="button" role="button" href="./dataexport.php">Export&nbsp;Data</a>
+            <a class="button" role="button" href="./dataimport.php">Import&nbsp;Data</a>
         </main>
     </body>
 </html>
