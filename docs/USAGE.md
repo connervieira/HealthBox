@@ -15,7 +15,7 @@ Note that newly registered services will not have any permissions, meaning they 
 
 ### Remove Services
 
-Removing a service will remove all datapoints submitted by the service. Keep in mind that you can revoke a service's access to HealthBox without deleting it completely. If you really do want to delete a service, you can do so by entering its ID in the "Remove Service" field, then clicking "Remove". You can click an ID under the "View Service" section to autofill this field.
+Removing a service will remove all datapoints submitted by the service. Keep in mind that you can revoke a service's access to HealthBox without deleting it completely. If you really do want to delete a service, you can do so by entering its ID in the "Remove Service" field, then clicking "Remove". You can click an ID under the "View Service" section to auto-fill this field.
 
 ### Manage Permissions
 
@@ -42,7 +42,7 @@ HealthBox maintains a food database that allows the user to register foods with 
 
 To add or edit a food, you'll first need to specify a service ID. This service needs to have the **foods-add** action to add a food, or **foods-edit** to edit an existing food. If you don't have a service with these permissions, you should create one now. Most users will create a "Web Interface" service for this purpose.
 
-After selecting a service ID, you need to enter a food ID. This is a string that uniquely identifies this food. If you want to edit an existing food, you can autofill this value by selecting a food under the "List Foods" section at the bottom of the page. Setting the food ID to an ID that already exists in the database will overwrite it.
+After selecting a service ID, you need to enter a food ID. This is a string that uniquely identifies this food. If you want to edit an existing food, you can auto-fill this value by selecting a food under the "List Foods" section at the bottom of the page. Setting the food ID to an ID that already exists in the database will overwrite it.
 
 The "food name" is a friendly name that is only used for display purposes. It does not need to be unique, but it generally should be to avoid confusion.
 

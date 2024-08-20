@@ -19,7 +19,7 @@ Information here is found in the `metadata` section of the database, and applies
     - This does not determine which nutrients are active, only which are shown to users of the instance.
     - HealthBox clients can always display whatever nutrients they want to the user, regardless of what is configured on the server.
 - **values** determines what pieces of information are tracked for each food added to the database (in addition to nutrients).
-    - This can be used to track custom information about each food (whether the food is vegan, the precense of allergens, etc.)
+    - This can be used to track custom information about each food (whether the food is vegan, the presence of allergens, etc.)
     - Each entry in this section must have the following attributes:
         - **name**, which is simply a human-friendly name of the entry.
         - **type**, which is the type of value that this entry will hold.

@@ -78,7 +78,7 @@ This section contains separate instructions for migrating between two externally
 1. Sign into your account.
 2. Click the "Manage Services" button.
 3. Register a new service for each of the services you had on the initial HealthBox instance.
-    - You can use the same service names for conveinence, or change them to something new.
+    - You can use the same service names for convenience, or change them to something new.
 4. Log into your self-hosted server's console using whichever method you prefer (SSH, FTP, physical access, etc.)
 5. Navigate to the HealthBox data directory.
     - By default, this directory is generally set to `/var/www/protected/healthbox`

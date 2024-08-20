@@ -107,11 +107,11 @@ To view datapoints for a particular metric, use the **/healthbox/fetch.php** end
 - `service`: The identifier of a service with read permissions to the metric being viewed.
 - `category`: The category of the metric to be viewed.
 - `metric`: The metric of the datapoint to be viewed.
-- `start_time` and `end_time`: Optional values that specify a time range of datapoints to retreive.
+- `start_time` and `end_time`: Optional values that specify a time range of datapoints to retrieve.
     - If one of these values is specified, the other must also be included.
     - Each of these values is a Unix timestamp (the number of seconds since midnight on January 1st, 1970).
     - The end time must be after the start time.
-    - If these values are ommitted, all datapoints for the metric will be returned.
+    - If these values are omitted, all datapoints for the metric will be returned.
 
 ### Example
 
