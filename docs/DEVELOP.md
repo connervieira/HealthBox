@@ -49,17 +49,16 @@ The `id` field is included with all error responses, but the `reason` and `value
     - `permission_denied`: The given service ID is not permitted to access the given metric or action.
 - `invalid_category`: The given category ID does not exist in the database.
 - `invalid_metric`: The given metric ID does not exist in the database.
-- `invalid_id`: The given identifier is invalid.
-    - `disallowed_characters`: The service identifier contains disallowed characters.
-    - `too_long`: The service identifier is longer than expected.
-    - `too_short`: The service identifier is shorter than expected.
-    - `not_found`: The service identifier does not exist in the database.
+- `invalid_id`: The given identifier is invalid (relevant to food database entries).
+    - `disallowed_characters`: The identifier contains disallowed characters.
+    - `too_long`: The identifier is longer than expected.
+    - `too_short`: The identifier is shorter than expected.
+    - `not_found`: The identifier does not exist in the database.
 - `missing_required_data`: Required keys are missing from the submission.
-- `invalid_value`: Required keys are missing from the submission.
-    - `disallowed_characters`: The service identifier contains disallowed characters. Only a-f and 0-9 are permitted.
-    - `too_long`: The service identifier is longer than expected.
-    - `too_short`: The service identifier is shorter than expected.
-    - `not_found`: The service identifier does not exist in the database.
+- `invalid_value`: A submitted value is invalid.
+    - `disallowed_characters`: The value contains disallowed characters. Only a-f, A-F, 0-9, apostrophes, spaces, underscores, hyphens, and parenthesis are permitted.
+    - `too_long`: The value is longer than expected.
+    - `too_short`: The value is shorter than expected.
 - `duplicate`: The submitted information is an exact duplicate of an existing datapoint.
 
 ### Success
