@@ -141,7 +141,6 @@ $service_data = load_servicedata();
                     $category_id = $_GET["category"];
                     echo '<label for="metric">Metric: </label><select id="metric" name="metric">';
                     if (in_array($category_id, array_keys($metrics))) { // Check to make sure the selected category actually exists in the database.
-                        print_r(array_keys($metrics[$category_id]));
                         foreach (array_keys($metrics[$category_id]["metrics"]) as $metric) {
                             echo "<option value='" . $metric . "'";
                             if ($_GET["metric"] == $metric) { echo "selected"; }

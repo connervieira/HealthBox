@@ -124,9 +124,6 @@ $selected = preg_replace("/[^a-f0-9]/", '', $selected);
                     }
                 }
 
-                echo "<pre>";
-                print_r($service_data);
-
                 save_servicedata($service_data);
                 echo "<p>Successfully updated permissions.</p>";
             }
