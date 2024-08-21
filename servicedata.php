@@ -68,7 +68,7 @@ function check_permissions_action($service, $action, $data) {
 function check_permissions_access($service, $category, $metric, $action, $data) {
     $user = find_serviceid($service, $data);
     if ($user !== false) { // Check to make sure an associated user was found.
-        if (in_array($category, array_keys($data[$user][$service]["permissions"]["access"]))) { // Check to see if this category is set for this service.
+        if (in_array("access", array_keys($data[$user][$service]["permissions"])) and in_array($category, array_keys($data[$user][$service]["permissions"]["access"]))) { // Check to see if this category is set for this service.
             if (in_array($metric, array_keys($data[$user][$service]["permissions"]["access"][$category]))) { // Check to see if this metric is set for this service.
                 if (in_array($action, array_keys($data[$user][$service]["permissions"]["access"][$category][$metric]))) { // Check to see if this action is set for this service.
                     if ($data[$user][$service]["permissions"]["access"][$category][$metric][$action] == true) { // Check to see if this action is granted.
