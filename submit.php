@@ -284,9 +284,10 @@ for ($i = 0; $i < sizeof($submission_data); $i++) { // Validate each submitted v
 }
 
 
-if (in_array("time", $submission_data)) { // Check to see if there is a timestamp in this submission.
-    $datapoint_time = $submission_data[$key]; // Make this timestamp the key for this entry.
-    unset($submission_data[$key]); // Remove the timestamp from the submission data.
+if (in_array("time", array_keys($submission_data))) { // Check to see if there is an absolute timestamp in this submission.
+    $datapoint_time = $submission_data["time"]; // Make this timestamp the key for this entry.
+} else if (in_array("start_time", array_keys($submission_data))) { // Check to see if there is a starting timestamp in this submission.
+    $datapoint_time = $submission_data["start_time"]; // Make this timestamp the key for this entry.
 }
 
 foreach ($health_data[$associated_user][$category_id][$metric_id] as $datapoint) { // Iterate over each existing datapoint for this metric.
@@ -297,6 +298,7 @@ foreach ($health_data[$associated_user][$category_id][$metric_id] as $datapoint)
 }
 
 $health_data[$associated_user][$category_id][$metric_id][$datapoint_time] = array(); // Initialize this datapoint.
+$health_data[$associated_user][$category_id][$metric_id][$datapoint_time]["time"] = time();
 $health_data[$associated_user][$category_id][$metric_id][$datapoint_time]["service"] = $service_id;
 $health_data[$associated_user][$category_id][$metric_id][$datapoint_time]["data"] = $submission_data; // Initialize this datapoint.
 
