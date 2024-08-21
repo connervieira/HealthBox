@@ -43,6 +43,7 @@ $service_data = load_servicedata();
         <main>
             <div class="navbar" role="navigation">
                 <a class="button" role="button" href="index.php">Back</a>
+                <a class="button" role="button" href="graphdata.php">Graph</a>
             </div>
             <h1>HealthBox</h1>
             <h2>Manage Data</h2>
@@ -187,8 +188,7 @@ $service_data = load_servicedata();
                                     echo "</select>";
                                 } else { // All other input types.
                                     echo "<label for='" . $key . "'>" . $key . "</label>: <input ";
-                                    if ($validation == "int") {
-                                        echo "min='1' type='number' step='1'";
+                                    if ($validation == "int") { echo "min='1' type='number' step='1'";
                                     } else if ($validation == "float") { echo "min='1' type='number'";
                                     } else if ($validation == "temperature") { echo "min='-273' type='number'";
                                     } else if ($validation == "percentage") { echo "min='0' max='1' step='0.01' type='number'";
@@ -196,6 +196,7 @@ $service_data = load_servicedata();
                                     } else if ($validation == "long_string") { echo "maxlength='150' pattern=\"[a-zA-Z0-9 '_\-\(\)]{0,150}\"";
                                     } else if ($validation == "long_string") { echo "maxlength='150' pattern=\"[a-zA-Z0-9 '_\-\(\)]{0,150}\"";
                                     } else if ($validation == "boolean") { echo "type='checkbox'";
+                                    } else if ($validation == "mood") { echo "min='-5' max='5' step='1' type='number'";
                                     }
                                     if ($required == true) { echo " required "; }
                                     echo " id='key-" . $key . "' name='key-" . $key . "' autocomplete='off'><br>";
