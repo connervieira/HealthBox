@@ -75,7 +75,7 @@ $service_data = load_servicedata();
                                         if ($start_time <= $key and $key <= $end_time) { // Check to see if this datapoint is between the start and end times.
                                             if (isset($datapoint["data"][$x_axis])) { // Check to make sure the X-axis is set.
                                                 array_push($x_datapoints, $datapoint["data"][$x_axis]); // Add this X-axis value to the list of values.
-                                                if ($x_datatype == "datetime") { // Check to see if the x_axis value is time.
+                                                if (in_array($x_datatype, array("datetime", "start_time", "end_time"))) { // Check to see if the x_axis value is time.
                                                     array_push($x_labels, date("Y-m-d H:i:s", $datapoint["data"][$x_axis])); // Convert the timestamp to a date for the label.
                                                 } else {
                                                     array_push($x_labels, $datapoint["data"][$x_axis]); // Just use the same X value as the label.
