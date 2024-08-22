@@ -76,3 +76,16 @@ To view the datapoints for a particular metric, first locate it in the "View Dat
 ### Delete Data
 
 To delete a datapoint from the web interface, first navigate to the metric by clicking "View Datapoints" under the metric in the "View Data" section of the "Manage Data" page. Then locate the datapoint you want to delete in the list, and click "Delete". Verify that the selected datapoint is the point you intend to delete, then press "Confirm".
+
+### Graphing Data
+
+HealthBox comes with an integrated web interface for graphing data from health metrics. To graph a particular metric, follow these steps:
+1. Go to the "Manage Data" page.
+2. Click the "Graph" button" in the top corner.
+3. Select the category of the metric you would like to graph, then press "Continue".
+4. Select the metric you would like to graph, then press "Continue".
+5. Select the value you would like to use for the X-axis. This is typically time.
+6. Select the value you would like to use for the Y-axis.
+7. Select the earliest time to graph datapoints from by setting the start time.
+8. Select the latest time to graph datapoints from by setting the end time.
+9. Press "Submit".
