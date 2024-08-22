@@ -102,8 +102,8 @@ $service_data = load_servicedata();
                                                             labels: xLabels,
                                                             datasets: [{
                                                                 label: \"" . $metrics[$category]["metrics"][$metric]["name"] . "\",
-                                                                backgroundColor:\"rgba(0,0,255,1.0)\",
-                                                                borderColor: \"rgba(0,0,255,0.1)\",
+                                                                backgroundColor:\"rgba(255,0,0,1.0)\",
+                                                                borderColor: \"rgba(255,0,0,0.1)\",
                                                                 data: yValues
                                                             }]
                                                         },
