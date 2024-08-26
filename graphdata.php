@@ -190,8 +190,11 @@ $service_data = load_servicedata();
                                 echo "<option value='$key'>$key</option>";
                             }
                             echo "</select><br>";
-                            echo "<label for='start_time'>Start Time</label>: <input id='start_time' name='start_time' type='datetime-local' autocomplete='off'><br>";
-                            echo "<label for='end_time'>End Time</label>: <input id='end_time' name='end_time' type='datetime-local' autocomplete='off'><br>";
+
+                            $earliest_datapoint_timestamp = min(array_keys($health_data[$username][$category_id][$metric_id])); // Determine the earliest datapoint for this metric.
+                            $latest_datapoint_timestamp = max(array_keys($health_data[$username][$category_id][$metric_id])); // Determine the latest datapoint for this metric.
+                            echo "<label for='start_time'>Start Time</label>: <input id='start_time' name='start_time' type='datetime-local' autocomplete='off' value='" . date("Y-m-d\TH:i:s", $earliest_datapoint_timestamp) . "'><br>";
+                            echo "<label for='end_time'>End Time</label>: <input id='end_time' name='end_time' type='datetime-local' autocomplete='off' value='" . date("Y-m-d\TH:i:s", $latest_datapoint_timestamp) . "'><br>";
                         } else {
                             echo "<p class='error'>The selected metric does not exist.</p>";
                             exit();
