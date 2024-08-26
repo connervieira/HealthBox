@@ -15,9 +15,7 @@ This is an informal to-do list for HealthBox. Is it not a comprehensive change-l
 - [X] Remove foods associated with a service when it is deleted.
 - [X] Rename `viewnutrients.php` file, and updated FOODS.md documentation.
 - [X] Create action permission check function.
-- [ ] Finish data graphing page.
-    - [X] Finish core graphing functionality.
-    - [ ] Add the ability to group data by day.
+- [X] Add data graphing page.
 - [ ] Add file write locking.
     - [X] Add health data file write locking.
     - [ ] Add food data file write locking.
