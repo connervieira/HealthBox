@@ -1,4 +1,5 @@
 <?php
+include "./utils.php";
 include "./metrics.php";
 include "./servicedata.php";
 include "./healthdata.php";
@@ -30,15 +31,29 @@ if ($associated_user == false) {
 
 $food_data = load_food();
 $metrics = load_metrics();
-$health_data = load_healthdata();
+for ($x = 0; $x <= 10; $x++) { // Run 10 times, checking to see if this file is unlocked.
+    if (is_file_unlocked($healthdata_database_filepath)) {
+        lock_file($healthdata_database_filepath);
+        $health_data = load_healthdata();
+        break; // Exit the loop
+    } else {
+        usleep(100*1000); // Wait briefly for the file to become unlocked.
+    }
+}
+if (!isset($health_data)) { // Check to see if the health data was never loaded after several checks in the previous step.
+    echo "{\"error\": {\"id\": \"system\", \"reason\": \"file_is_locked\", \"description\": \"The health data file is locked for writing by another process.\"}}";
+    exit();
+}
 
 
 if (in_array($category_id, array_keys($metrics)) == false) { // Check to see if the submitted category ID does not exist in the metrics database.
     echo "{\"error\": {\"id\": \"invalid_category\", \"description\": \"The specified category ID does not exist.\"}}";
+    unlock_file($healthdata_database_filepath);
     exit();
 }
 if (in_array($metric_id, array_keys($metrics[$category_id]["metrics"])) == false) { // Check to see if the submitted metric ID does not exist in the metrics database.
     echo "{\"error\": {\"id\": \"invalid_metric\", \"description\": \"The specified metric ID does not exist.\"}}";
+    unlock_file($healthdata_database_filepath);
     exit();
 }
 
@@ -51,6 +66,7 @@ if (check_permissions_action($service_id, "data-writeall", $services) == true) {
 }
 if ($access == false) {
     echo "{\"error\": {\"id\": \"invalid_service\", \"reason\": \"permission_denied\", \"description\": \"The specified service identifier does not have permission to write to the specified metric.\"}}";
+    unlock_file($healthdata_database_filepath);
     exit();
 }
 
@@ -85,6 +101,7 @@ for ($i = 0; $i < sizeof($submission_data); $i++) { // Run once for each key in 
 }
 if ($all_required_metrics_present == false) {
     echo "{\"error\": {\"id\": \"missing_required_data\", \"description\": \"The submission is missing required data for this metric.\"}}";
+            unlock_file($healthdata_database_filepath);
     exit();
 }
 
@@ -99,17 +116,20 @@ for ($i = 0; $i < sizeof($submission_data); $i++) { // Validate each submitted v
     if ($validation_rule == "int") { // int: A positive whole number.
         if (floatval($submission_data[$key]) != round(floatval($submission_data[$key]))) { // Check to see if this value is not a whole number.
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $key ."\", \"description\": \"The data submitted for " . $key . " is invalid because it is not a whole number.\"}}";
+            unlock_file($healthdata_database_filepath);
             exit();
         }
         $submission_data[$key] = intval($submission_data[$key]); // Convert this value to an integer.
         if ($submission_data[$key] < 0) { // Check to see if this value is negative.
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $key ."\", \"description\": \"The data submitted for " . $key . " is invalid because it is a negative number.\"}}";
+            unlock_file($healthdata_database_filepath);
             exit();
         }
     } else if ($validation_rule == "float") { // float: A positive decimal number
         $submission_data[$key] = floatval($submission_data[$key]); // Convert this value to a floating point number.
         if ($submission_data[$key] < 0) { // Check to see if this value is negative.
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $key ."\", \"description\": \"The data submitted for " . $key . " is invalid because it is a negative number.\"}}";
+            unlock_file($healthdata_database_filepath);
             exit();
         }
     } else if ($validation_rule == "start_time" or $validation_rule == "end_time") { // start_time: A Unix timestamp before end_time (integer). /// end_time: A Unix timestamp after start_time (integer).
@@ -121,9 +141,11 @@ for ($i = 0; $i < sizeof($submission_data); $i++) { // Validate each submitted v
 
         if (floatval($submission_data[$start_time_key]) != round(floatval($submission_data[$start_time_key]))) { // Check to see if the start time is not a whole number.
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $start_time_key ."\", \"description\": \"The data submitted for " . $start_time_key . " is invalid because it is not a whole number.\"}}";
+            unlock_file($healthdata_database_filepath);
             exit();
         } else if (floatval($submission_data[$end_time_key]) != round(floatval($submission_data[$end_time_key]))) { // Check to see if the end time is not a whole number.
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $end_time_key ."\", \"description\": \"The data submitted for " . $end_time_key . " is invalid because it is not a whole number.\"}}";
+            unlock_file($healthdata_database_filepath);
             exit();
         }
 
@@ -132,44 +154,53 @@ for ($i = 0; $i < sizeof($submission_data); $i++) { // Validate each submitted v
 
         if ($submission_data[$start_time_key] <= 0) { // Check to see if the start time is not a positive number.
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $start_time_key . "\", \"description\": \"The data submitted for " . $start_time_key . " is invalid because it is not a positive number.\"}}";
+            unlock_file($healthdata_database_filepath);
             exit();
         } else if ($submission_data[$end_time_key] <= 0) { // Check to see if the end time is not a positive number.
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $end_time_key . "\", \"description\": \"The data submitted for " . $end_time_key . " is invalid because it is not a positive number.\"}}";
+            unlock_file($healthdata_database_filepath);
             exit();
         }
 
         if ($submission_data[$start_time_key] >= $submission_data[$end_time_key]) { // Check to see if the start time occurs after the end time.
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $start_time_key ."\", \"description\": \"The data submitted for " . $start_time_key . " is invalid because it occurs after the value for " . $end_time_key . ".\"}}";
+            unlock_file($healthdata_database_filepath);
             exit();
         }
     } else if ($validation_rule == "datetime") { // datetime: A Unix timestamp
         if (floatval($submission_data[$key]) != round(floatval($submission_data[$key]))) { // Check to see if this value is not a whole number.
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $key . "\", \"description\": \"The data submitted for " . $key . " is invalid because it is not a whole number.\"}}";
+            unlock_file($healthdata_database_filepath);
             exit();
         }
         $submission_data[$key] = intval($submission_data[$key]); // Convert this value to an integer.
         if ($submission_data[$key] <= 0) { // Check to see if this value is not a positive number.
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $key . "\", \"description\": \"The data submitted for " . $key . " is invalid because it is not a positive number.\"}}";
+            unlock_file($healthdata_database_filepath);
             exit();
         }
     } else if ($validation_rule == "short_string") { // short_string: A string under 20 characters. (Allowed characters: a-zA-Z0-9 '_-())
         $submission_data[$key] = strval($submission_data[$key]); // Convert this value to a string.
         if (strlen($submission_data[$key]) > 20) { // Check to see if this value is too long.
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $key . "\", \"description\": \"The data submitted for " . $key . " is invalid because it is over 20 characters long.\"}}";
+            unlock_file($healthdata_database_filepath);
             exit();
         }
         if ($submission_data[$key] != preg_replace("/[^a-zA-Z0-9 '_\-()]/", '', $submission_data[$key])) { // Check to see if this value contains disallowed characters.
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $key . "\", \"description\": \"The data submitted for " . $key . " is invalid because it contains disallowed characters.\"}}";
+            unlock_file($healthdata_database_filepath);
             exit();
         }
     } else if ($validation_rule == "long_string") { // long_string: A string under 150 characters. (Allowed characters: a-zA-Z0-9 '_-())
         $submission_data[$key] = strval($submission_data[$key]); // Convert this value to a string.
         if (strlen($submission_data[$key]) > 150) { // Check to see if this value is too long.
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $key . "\", \"description\": \"The data submitted for " . $key . " is invalid because it is over 150 characters long.\"}}";
+            unlock_file($healthdata_database_filepath);
             exit();
         }
         if ($submission_data[$key] != preg_replace("/[^a-zA-Z0-9 '_\-()]/", '', $submission_data[$key])) { // Check to see if this value contains disallowed characters.
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $key . "\", \"description\": \"The data submitted for " . $key . " is invalid because it contains disallowed characters.\"}}";
+            unlock_file($healthdata_database_filepath);
             exit();
         }
     } else if ($validation_rule == "boolean") { // boolean: A 'true' or 'false' value
@@ -183,6 +214,7 @@ for ($i = 0; $i < sizeof($submission_data); $i++) { // Validate each submitted v
             $submission_data[$key] = false; 
         } else {
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $key . "\", \"description\": \"The data submitted for " . $key . " is invalid because it does not appear to be a boolean.\"}}";
+            unlock_file($healthdata_database_filepath);
             exit();
         }
     } else if ($validation_rule == "sex") { // sex: A 1 character string: M, F, or I
@@ -192,6 +224,7 @@ for ($i = 0; $i < sizeof($submission_data); $i++) { // Validate each submitted v
 
         if ($submission_data[$key] !== "M" and $submission_data[$key] !== "F" and $submission_data[$key] !== "I") { // Check to see if this value is not any of the expected values.
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $key . "\", \"description\": \"The data submitted for " . $key . " is invalid because it is not a valid option.\"}}";
+            unlock_file($healthdata_database_filepath);
             exit();
         }
     } else if ($validation_rule == "sexuality") { // sexuality: A 1 character string: S, G, B, or A
@@ -201,18 +234,21 @@ for ($i = 0; $i < sizeof($submission_data); $i++) { // Validate each submitted v
 
         if ($submission_data[$key] !== "S" and $submission_data[$key] !== "G" and $submission_data[$key] !== "B" and $submission_data[$key] !== "A") { // Check to see if this value is not any of the expected values.
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $key . "\", \"description\": \"The data submitted for " . $key . " is invalid because it is not a valid option.\"}}";
+            unlock_file($healthdata_database_filepath);
             exit();
         }
     } else if ($validation_rule == "temperature") { // temperature: A positive or negative float, above -273
         $submission_data[$key] = floatval($submission_data[$key]);
         if ($submission_data[$key] <= -273) {
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $key . "\", \"description\": \"The data submitted for " . $key . " is invalid because it is below absolute zero.\"}}";
+            unlock_file($healthdata_database_filepath);
             exit();
         }
     } else if ($validation_rule == "percentage") { // percentage: A decimal number ranged 0 to 1, inclusively.
         $submission_data[$key] = floatval($submission_data[$key]);
         if ($submission_data[$key] < 0 or $submission_data[$key] > 1) {
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $key . "\", \"description\": \"The data submitted for " . $key . " is invalid because it is outside of the expected range.\"}}";
+            unlock_file($healthdata_database_filepath);
             exit();
         }
     } else if ($validation_rule == "side") { // side: A 1 character string: L or R
@@ -222,62 +258,76 @@ for ($i = 0; $i < sizeof($submission_data); $i++) { // Validate each submitted v
 
         if ($submission_data[$key] !== "L" and $submission_data[$key] !== "R") { // Check to see if this value is not any of the expected values.
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $key . "\", \"description\": \"The data submitted for " . $key . " is invalid because it is not a valid option.\"}}";
+            unlock_file($healthdata_database_filepath);
             exit();
         }
     } else if ($validation_rule == "foodid") { // foodid: A food ID that exists in the food database.
         $submission_data[$key] = strval($submission_data[$key]); // Convert this value to a string.
         if (strlen($submission_data[$key]) > 150) { // Check to see if this value is excessively long.
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $key . "\", \"description\": \"The data submitted for " . $key . " is invalid because it is excessively long.\"}}";
+            unlock_file($healthdata_database_filepath);
             exit();
         }
         if ($submission_data[$key] != preg_replace("/[^a-zA-Z0-9 '_\-()]/", '', $submission_data[$key])) { // Check to see if this value contains disallowed characters.
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $key . "\", \"description\": \"The data submitted for " . $key . " is invalid because it contains disallowed characters.\"}}";
+            unlock_file($healthdata_database_filepath);
             exit();
         }
         if (in_array($submission_data[$key], array_keys($food_data["entries"][$associated_user]["foods"])) == false) { // Check to see if this food ID is not in the food database.
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $key . "\", \"description\": \"The data submitted for " . $key . " is invalid because the specified ID does not exist in the food database.\"}}";
+            unlock_file($healthdata_database_filepath);
             exit();
         }
     } else if ($validation_rule == "mealid") { // mealid: A string that combines a date (YYYY-MM-DD) and meal number, where 0 is a snack (1 for breakfast, 2 for lunch, 3 for dinner) separated by a comma. For example, dinner on May 5th would be "2024-05-21,3".
         if ($submission_data[$key] != preg_replace("/[^0-9,\-]/", '', $submission_data[$key])) { // Check to see if this value contains disallowed characters.
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $key . "\", \"description\": \"The data submitted for " . $key . " is invalid because it contains disallowed characters.\"}}";
+            unlock_file($healthdata_database_filepath);
             exit();
         }
         $meal_components = explode(",", $submission_data[$key]); // Split this value into its components (date and meal number).
         if (sizeof($meal_components) > 2) {
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $key . "\", \"description\": \"The data submitted for " . $key . " is invalid because it contains more than 1 comma.\"}}";
+            unlock_file($healthdata_database_filepath);
             exit();
         } else if (sizeof($meal_components) < 2) {
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $key . "\", \"description\": \"The data submitted for " . $key . " is invalid because it does not contain a comma.\"}}";
+            unlock_file($healthdata_database_filepath);
             exit();
         }
         $date = explode("-", $meal_components[0]);
         $meal = intval($meal_components[1]);
         if (!preg_match("/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/", $meal_components[0])) {
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $key . "\", \"description\": \"The data submitted for " . $key . " is invalid because the date is not in the expected format (YYYY-MM-DD).\"}}";
+            unlock_file($healthdata_database_filepath);
             exit();
         } else if (checkdate($date[1], $date[2], $date[0]) == false) {
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $key . "\", \"description\": \"The data submitted for " . $key . " is invalid because the date is invalid.\"}}";
+            unlock_file($healthdata_database_filepath);
             exit();
         }
         if ($meal < 0) {
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $key . "\", \"description\": \"The data submitted for " . $key . " is invalid because the meal number is a negative number.\"}}";
+            unlock_file($healthdata_database_filepath);
             exit();
         } else if ($meal > 9) {
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $key . "\", \"description\": \"The data submitted for " . $key . " is invalid because the meal number is excessively high.\"}}";
+            unlock_file($healthdata_database_filepath);
             exit();
         }
     } else if ($validation_rule == "mood") { // mood: An integer ranging from -5 to 5.
         if (floatval($submission_data[$key]) != round(floatval($submission_data[$key]))) { // Check to see if this value is not a whole number.
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $key ."\", \"description\": \"The data submitted for " . $key . " is invalid because it is not a whole number.\"}}";
+            unlock_file($healthdata_database_filepath);
             exit();
         }
         $submission_data[$key] = intval($submission_data[$key]); // Convert this value to an integer.
         if ($submission_data[$key] < -5) {
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $key . "\", \"description\": \"The data submitted for " . $key . " is invalid because it is below -5.\"}}";
+            unlock_file($healthdata_database_filepath);
             exit();
         } else if ($submission_data[$key] > 5) {
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $key . "\", \"description\": \"The data submitted for " . $key . " is invalid because it is above 5.\"}}";
+            unlock_file($healthdata_database_filepath);
             exit();
         }
     }
@@ -293,6 +343,7 @@ if (in_array("time", array_keys($submission_data))) { // Check to see if there i
 foreach ($health_data[$associated_user][$category_id][$metric_id] as $datapoint) { // Iterate over each existing datapoint for this metric.
     if ($datapoint["data"] == $submission_data) { // Check to see if this datapoint exact matches the data we are about to submit.
         echo "{\"error\": {\"id\": \"duplicate\", \"description\": \"The data submitted is an exact duplicate of an existing datapoint.\"}}";
+        unlock_file($healthdata_database_filepath);
         exit();
     }
 }
@@ -303,5 +354,6 @@ $health_data[$associated_user][$category_id][$metric_id][$datapoint_time]["servi
 $health_data[$associated_user][$category_id][$metric_id][$datapoint_time]["data"] = $submission_data; // Initialize this datapoint.
 
 save_healthdata($health_data);
+unlock_file($healthdata_database_filepath);
 echo "{\"success\": {\"description\": \"A new datapoint has been added under " . $category_id . ">" . $metric_id . ">" . $datapoint_time . ".\"}}";
 ?>

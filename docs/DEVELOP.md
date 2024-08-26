@@ -60,6 +60,10 @@ The `id` field is included with all error responses, but the `reason` and `value
     - `too_long`: The value is longer than expected.
     - `too_short`: The value is shorter than expected.
 - `duplicate`: The submitted information is an exact duplicate of an existing datapoint.
+- `system`: Something has gone wrong on the server side.
+    - `file_lock_failed`: A certain file could not be locked for writing.
+    - `file_unlock_failed`: A certain file could not be unlocked after writing.
+    - `file_is_locked`: A file is currently locked for writing, and didn't unlocked after a brief wait.
 
 ### Success
 
