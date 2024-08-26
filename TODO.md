@@ -18,3 +18,6 @@ This is an informal to-do list for HealthBox. Is it not a comprehensive change-l
 - [ ] Finish data graphing page.
     - [X] Finish core graphing functionality.
     - [ ] Add the ability to group data by day.
+- [ ] Add file write locking.
+    - [X] Add health data file write locking.
+    - [ ] Add food data file write locking.
