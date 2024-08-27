@@ -29,7 +29,19 @@ if ($associated_user == false) {
 }
 
 include "./fooddata.php";
-$food_data = load_food();
+for ($x = 0; $x <= 10; $x++) { // Run 10 times, checking to see if this file is unlocked.
+    if (is_file_unlocked($food_database_filepath)) {
+        lock_file($food_database_filepath);
+        $food_data = load_food();
+        break; // Exit the loop
+    } else {
+        usleep(100*1000); // Wait briefly for the file to become unlocked.
+    }
+}
+if (!isset($food_data)) { // Check to see if the health data was never loaded after several checks in the previous step.
+    echo "{\"error\": {\"id\": \"system\", \"reason\": \"file_is_locked\", \"description\": \"The food data file is locked for writing by another process.\"}}";
+    exit();
+}
 
 foreach (array_keys($food_data["metadata"]["values"]) as $value) {
     $values[$value] = $_GET[$value];
@@ -39,10 +51,11 @@ foreach (array_keys($food_data["metadata"]["values"]) as $value) {
 
 if ($food_id != preg_replace("/[^a-zA-Z0-9\-_]/", '', $food_id)) { // Check to see if the provided food_id contains disallowed values.
     echo "{\"error\": {\"id\": \"invalid_id\", \"reason\": \"disallowed_characters\", \"description\": \"The submitted food_id is invalid because it contains disallowed characters.\"}}";
-    echo "<p>The provided food ID contains disallowed characters.</p>";
+    unlock_file($food_database_filepath);
     exit();
 } else if (strlen($food_id) >= 100) { // Check of the provided food_id is excessively long.
     echo "{\"error\": {\"id\": \"invalid_id\", \"reason\": \"too_long\", \"description\": \"The submitted food_id is invalid because it is excessively long.\"}}";
+    unlock_file($food_database_filepath);
     exit();
 }
 
@@ -53,6 +66,7 @@ foreach (array_keys($food_data["metadata"]["values"]) as $value) {
         if (strlen($values[$value]) == 0) { // Check to see if this value is not set.
             if ($food_data["metadata"]["values"][$value]["required"] == true) { // Check to see if this value is required.
                 echo "{\"error\": {\"id\": \"missing_required_data\", \"value\": \"" . $value . "\", \"description\": \"The submission is missing a required value for this food.\"}}";
+                unlock_file($food_database_filepath);
                 exit();
             } else { // Otherwise, this value is not required.
                 unset($values[$value]);
@@ -60,9 +74,11 @@ foreach (array_keys($food_data["metadata"]["values"]) as $value) {
         } else { // This value is set.
             if ($values[$value] != preg_replace("/[^a-zA-Z0-9\-_ \']/", '', $values[$value])) { // Check to see if the provided value contains disallowed values.
                 echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $value . "\", \"reason\": \"disallowed_characters\", \"description\": \"The submitted " . $value . " is invalid because it contains disallowed characters.\"}}";
+                unlock_file($food_database_filepath);
                 exit();
             } else if (strlen($values[$value]) >= 100) { // Check of the provided value is excessively long.
                 echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $value . "\", \"reason\": \"too_long\", \"description\": \"The submitted " . $value . " is invalid because it is excessively long.\"}}";
+                unlock_file($food_database_filepath);
                 exit();
             }
         }
@@ -71,6 +87,7 @@ foreach (array_keys($food_data["metadata"]["values"]) as $value) {
         if (strlen($values[$value]) == 0) { // Check to see if this value is not set.
             if ($food_data["metadata"]["values"][$value]["required"] == true) { // Check to see if this value is required.
                 echo "{\"error\": {\"id\": \"missing_required_data\", \"value\": \"" . $value . "\", \"description\": \"The submission is missing a required value for this food.\"}}";
+                unlock_file($food_database_filepath);
                 exit();
             } else { // Otherwise, this value is not required.
                 unset($values[$value]);
@@ -82,6 +99,7 @@ foreach (array_keys($food_data["metadata"]["values"]) as $value) {
                 $values[$value] = false;
             } else {
                 echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $value . "\", \"description\": \"The submitted " . $value . " is invalid because it is not a boolean.\"}}";
+                unlock_file($food_database_filepath);
                 exit();
             }
         }
@@ -89,6 +107,7 @@ foreach (array_keys($food_data["metadata"]["values"]) as $value) {
         if (strlen($values[$value]) == 0) { // Check to see if this value is not set.
             if ($food_data["metadata"]["values"][$value]["required"] == true) { // Check to see if this value is required.
                 echo "{\"error\": {\"id\": \"missing_required_data\", \"value\": \"" . $value . "\", \"description\": \"The submission is missing a required value for this food.\"}}";
+                unlock_file($food_database_filepath);
                 exit();
             } else { // Otherwise, this value is not required.
                 unset($values[$value]);
@@ -100,6 +119,7 @@ foreach (array_keys($food_data["metadata"]["values"]) as $value) {
         if (strlen($values[$value]) == 0) { // Check to see if this value is not set.
             if ($food_data["metadata"]["values"][$value]["required"] == true) { // Check to see if this value is required.
                 echo "{\"error\": {\"id\": \"missing_required_data\", \"value\": \"" . $value . "\", \"description\": \"The submission is missing a required value for this food.\"}}";
+                unlock_file($food_database_filepath);
                 exit();
             } else { // Otherwise, this value is not required.
                 unset($values[$value]);
@@ -109,6 +129,7 @@ foreach (array_keys($food_data["metadata"]["values"]) as $value) {
                 $values[$value] = intval($values[$value]);
             } else {
                 echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $value . "\", \"description\": \"The submitted " . $value . " is invalid because it is not a whole number.\"}}";
+                unlock_file($food_database_filepath);
                 exit();
             }
         }
@@ -117,18 +138,22 @@ foreach (array_keys($food_data["metadata"]["values"]) as $value) {
 
 
 $serving_size = floatval($serving_size);
-if ($serving_size <= 0) {
+if ($serving_size < 0) {
     echo "{\"error\": {\"id\": \"invalid_servingsize\", \"description\": \"The submitted serving_size is invalid because it is not a positive number.\"}}";
+    unlock_file($food_database_filepath);
     exit();
 } else if ($serving_size > 10000) {
     echo "{\"error\": {\"id\": \"invalid_servingsize\", \"description\": \"The submitted serving_size is invalid because it is excessively large.\"}}";
+    unlock_file($food_database_filepath);
     exit();
 }
 if ($serving_unit != preg_replace("/[^a-z ]/", '', $serving_unit)) { // Check to see if the provided serving_unit contains disallowed values.
     echo "{\"error\": {\"id\": \"invalid_servingunit\", \"description\": \"The submitted serving_unit is invalid because it contains disallowed characters.\"}}";
+    unlock_file($food_database_filepath);
     exit();
 } else if (strlen($serving_unit) >= 20) { // Check of the provided serving_unit is excessively long.
     echo "{\"error\": {\"id\": \"invalid_servingunit\", \"description\": \"The submitted serving_unit is invalid because it is excessively long.\"}}";
+    unlock_file($food_database_filepath);
     exit();
 }
 
@@ -144,12 +169,14 @@ if (in_array($food_id, array_keys($food_data["entries"][$associated_user]["foods
     // Check to see if this service has permission to overwrite foods.
     if (check_permissions_action($service_id, "foods-edit", $services) == false) {
         echo "{\"error\": {\"id\": \"invalid_service\", \"reason\": \"permission_denied\", \"description\": \"The specified service identifier does not have permission to edit foods.\"}}";
+        unlock_file($food_database_filepath);
         exit();
     }
 } else {
     // Check to see if this service has permission to create new foods.
     if (check_permissions_action($service_id, "foods-add", $services) == false) {
         echo "{\"error\": {\"id\": \"invalid_service\", \"reason\": \"permission_denied\", \"description\": \"The specified service identifier does not have permission to add foods.\"}}";
+        unlock_file($food_database_filepath);
         exit();
     }
 }
@@ -172,8 +199,12 @@ foreach (array_keys($food_data["metadata"]["nutrients"]) as $nutrient) { // Iter
         $nutrient_input = floatval($nutrient_input);
         if ($nutrient_input < 0) {
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $nutrient . "\", \"description\": \"The submitted value for \"" . $nutrient . "\" is invalid because it is a negative number.\"}}";
+            unlock_file($food_database_filepath);
+            exit();
         } else if ($nutrient_input > 1000000) {
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $nutrient . "\", \"description\": \"The submitted value for \"" . $nutrient . "\" is invalid because it is excessively large.\"}}";
+            unlock_file($food_database_filepath);
+            exit();
         } else {
             $food_data["entries"][$associated_user]["foods"][$food_id]["nutrients"][$nutrient] = $nutrient_input;
         }
@@ -181,5 +212,6 @@ foreach (array_keys($food_data["metadata"]["nutrients"]) as $nutrient) { // Iter
 }
 
 save_food($food_data);
+unlock_file($food_database_filepath);
 echo "{\"success\": {\"description\": \"A new food has been added as \"" . $food_id . "\".\"}}";
 ?>

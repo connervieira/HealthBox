@@ -31,15 +31,29 @@ if ($associated_user == false) {
 
 $food_data = load_food();
 $metrics = load_metrics();
-$health_data = load_healthdata();
+for ($x = 0; $x <= 10; $x++) { // Run 10 times, checking to see if this file is unlocked.
+    if (is_file_unlocked($healthdata_database_filepath)) {
+        lock_file($healthdata_database_filepath);
+        $health_data = load_healthdata();
+        break; // Exit the loop
+    } else {
+        usleep(100*1000); // Wait briefly for the file to become unlocked.
+    }
+}
+if (!isset($health_data)) { // Check to see if the health data was never loaded after several checks in the previous step.
+    echo "{\"error\": {\"id\": \"system\", \"reason\": \"file_is_locked\", \"description\": \"The health data file is locked for writing by another process.\"}}";
+    exit();
+}
 
 
 if (in_array($category_id, array_keys($metrics)) == false) { // Check to see if the submitted category ID does not exist in the metrics database.
     echo "{\"error\": {\"id\": \"invalid_category\", \"description\": \"The specified category ID does not exist.\"}}";
+    unlock_file($healthdata_database_filepath);
     exit();
 }
 if (in_array($metric_id, array_keys($metrics[$category_id]["metrics"])) == false) { // Check to see if the submitted metric ID does not exist in the metrics database.
     echo "{\"error\": {\"id\": \"invalid_metric\", \"description\": \"The specified metric ID does not exist.\"}}";
+    unlock_file($healthdata_database_filepath);
     exit();
 }
 
@@ -52,6 +66,7 @@ if (check_permissions_action($service_id, "data-writeall", $services) == true) {
 }
 if ($access == false) {
     echo "{\"error\": {\"id\": \"invalid_service\", \"invalid_metric\": \"permission_denied\", \"description\": \"The specified service identifier does not have permission to write to the specified metric.\"}}";
+    unlock_file($healthdata_database_filepath);
     exit();
 }
 
@@ -64,21 +79,26 @@ if (in_array($associated_user, array_keys($health_data))) { // Check to see if t
                 $health_data = delete_datapoint($health_data, $associated_user, $category_id, $metric_id, $datapoint_id);
             } else {
                 echo "{\"error\": {\"id\": \"not_found\", \"description\": \"The specified datapoint does not exist.\"}}";
+                unlock_file($healthdata_database_filepath);
                 exit();
             }
         } else {
             echo "{\"error\": {\"id\": \"not_found\", \"description\": \"The specified datapoint does not exist.\"}}";
+            unlock_file($healthdata_database_filepath);
             exit();
         }
     } else {
         echo "{\"error\": {\"id\": \"not_found\", \"description\": \"The specified datapoint does not exist.\"}}";
+        unlock_file($healthdata_database_filepath);
         exit();
     }
 } else {
     echo "{\"error\": {\"id\": \"not_found\", \"description\": \"The specified datapoint does not exist.\"}}";
+    unlock_file($healthdata_database_filepath);
     exit();
 }
 
 save_healthdata($health_data);
+unlock_file($healthdata_database_filepath);
 echo "{\"success\": {\"description\": \"Datapoint \"$category_id - $metric_id - $datapoint_id\" has been deleted.\"}}";
 ?>

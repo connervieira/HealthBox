@@ -16,6 +16,6 @@ This is an informal to-do list for HealthBox. Is it not a comprehensive change-l
 - [X] Rename `viewnutrients.php` file, and updated FOODS.md documentation.
 - [X] Create action permission check function.
 - [X] Add data graphing page.
-- [ ] Add file write locking.
+- [X] Add file write locking.
     - [X] Add health data file write locking.
-    - [ ] Add food data file write locking.
+    - [X] Add food data file write locking.

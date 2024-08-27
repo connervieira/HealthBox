@@ -33,22 +33,51 @@ if (check_permissions_action($service_id, "foods-delete", $services) == false) {
 include "./fooddata.php";
 include "./healthdata.php";
 include "./metrics.php";
-$food_data = load_food();
-$health_data = load_healthdata();
 $metrics = load_metrics();
+for ($x = 0; $x <= 10; $x++) { // Run 10 times, checking to see if this file is unlocked.
+    if (is_file_unlocked($food_database_filepath)) {
+        lock_file($food_database_filepath);
+        $food_data = load_food();
+        break; // Exit the loop
+    } else {
+        usleep(100*1000); // Wait briefly for the file to become unlocked.
+    }
+}
+if (!isset($food_data)) { // Check to see if the health data was never loaded after several checks in the previous step.
+    echo "{\"error\": {\"id\": \"system\", \"reason\": \"file_is_locked\", \"description\": \"The food data file is locked for writing by another process.\"}}";
+    exit();
+}
+for ($x = 0; $x <= 10; $x++) { // Run 10 times, checking to see if this file is unlocked.
+    if (is_file_unlocked($healthdata_database_filepath)) {
+        lock_file($healthdata_database_filepath);
+        $health_data = load_healthdata();
+        break; // Exit the loop
+    } else {
+        usleep(100*1000); // Wait briefly for the file to become unlocked.
+    }
+}
+if (!isset($health_data)) { // Check to see if the health data was never loaded after several checks in the previous step.
+    echo "{\"error\": {\"id\": \"system\", \"reason\": \"file_is_locked\", \"description\": \"The health data file is locked for writing by another process.\"}}";
+    exit();
+}
 
 
 if ($food_id != preg_replace("/[^a-zA-Z0-9\-_]/", '', $food_id)) { // Check to see if the provided food_id contains disallowed values.
     echo "{\"error\": {\"id\": \"invalid_id\", \"description\": \"The submitted food_id is invalid because it contains disallowed characters.\"}}";
-    echo "<p>The provided food ID contains disallowed characters.</p>";
+    unlock_file($food_database_filepath);
+    unlock_file($healthdata_database_filepath);
     exit();
 } else if (strlen($food_id) >= 100) { // Check of the provided food_id is excessively long.
     echo "{\"error\": {\"id\": \"invalid_id\", \"description\": \"The submitted food_id is invalid because it is excessively long.\"}}";
+    unlock_file($food_database_filepath);
+    unlock_file($healthdata_database_filepath);
     exit();
 }
 
 if (!in_array($food_id, array_keys($food_data["entries"][$associated_user]["foods"]))) {
     echo "{\"error\": {\"id\": \"invalid_id\", \"description\": \"The specified food_id does not exist in this user's food database.\"}}";
+    unlock_file($food_database_filepath);
+    unlock_file($healthdata_database_filepath);
     exit();
 }
 
@@ -82,5 +111,7 @@ if ($healthdata_modified == true) {
 
 unset($food_data["entries"][$associated_user]["foods"][$food_id]);
 save_food($food_data);
-echo "{\"success\": {\"description\": \"A the '" . $food_id . "' food has be deleted.\"}}";
+unlock_file($food_database_filepath);
+unlock_file($healthdata_database_filepath);
+echo "{\"success\": {\"description\": \"The '" . $food_id . "' food has been deleted.\"}}";
 ?>
