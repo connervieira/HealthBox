@@ -71,7 +71,7 @@ $service_data = load_servicedata();
                         if (sizeof($sorted_keys) > 0) {
                             foreach ($sorted_keys as $key) {
                                 echo "<div class=\"buffer\">";
-                                echo "<h4>" . date("Y-m-d H:i:s", $key) . " <a class='button' href='deletedata.php?category=" . $category_id . "&metric=" . $metric_id . "&datapoint=" . $key . "'>Delete</a></h4>";
+                                echo "<h4>" . date("Y-m-d H:i:s", $key) . " UTC <a class='button' href='deletedata.php?category=" . $category_id . "&metric=" . $metric_id . "&datapoint=" . $key . "'>Delete</a></h4>";
                                 foreach ($health_data[$username][$category_id][$metric_id][$key]["data"] as $component_key => $component_value) {
                                     echo "<p style='margin-bottom:0px;margin-top:1px;'>" . $component_key . ": " . $component_value . "</p>";
                                 }

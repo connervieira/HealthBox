@@ -48,9 +48,9 @@ $metrics = load_metrics();
                 <ul>
                     <li><b>int</b>: A positive whole number</li>
                     <li><b>float</b>: A positive decimal number</li>
-                    <li><b>start_time</b>: A Unix timestamp before end_time (integer)</li>
-                    <li><b>end_time</b>: A Unix timestamp after start_time (integer)</li>
-                    <li><b>datetime</b>: A Unix timestamp (integer)</li>
+                    <li><b>start_time</b>: A Unix timestamp (UTC) before end_time (integer)</li>
+                    <li><b>end_time</b>: A Unix timestamp (UTC) after start_time (integer)</li>
+                    <li><b>datetime</b>: A Unix timestamp (UTC) (integer)</li>
                     <li><b>short_string</b>: A string under 20 characters (Allowed characters: a-zA-Z0-9 '_-())</li>
                     <li><b>long_string</b>: A string under 150 characters (Allowed characters: a-zA-Z0-9 '_-())</li>
                     <li><b>boolean</b>: A 'true' or 'false' value</li>
