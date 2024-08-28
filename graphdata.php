@@ -173,21 +173,33 @@ $service_data = load_servicedata();
 
                     if (isset($_GET["metric"])) { // Check to see if a metric has been selected.
                         $metric_id = $_GET["metric"];
+                        $graphable_values = array("int", "float", "start_time", "end_time", "datetime", "percentage", "temperature", "mood");
                         if (in_array($metric_id, array_keys($metrics[$category_id]["metrics"]))) { // Check to make sure the selected metric actually exists in the database.
                             $final_step = true;
                             echo "<label for='x_axis'>X-Axis</label>: <select id='x_axis' name='x_axis'>";
+                            $displayed_keys = 0; // This will keep track of how many keys are displayed for sake of alerting the user when there are less than 2 supported keys.
                             foreach (array_keys($metrics[$category_id]["metrics"][$metric_id]["keys"]) as $key) {
-                                $value_name = $metrics[$category_id]["metrics"][$metric_id]["keys"][$key];
-                                echo "<option value=\"" . $value_name . "\"";
-                                if ($metrics[$category_id]["metrics"][$metric_id]["validation"][$key] == "datetime") {
-                                    echo " selected";
+                                if (in_array($metrics[$category_id]["metrics"][$metric_id]["validation"][$key], $graphable_values)) {
+                                    $displayed_keys += 1;
+                                    $value_name = $metrics[$category_id]["metrics"][$metric_id]["keys"][$key];
+                                    echo "<option value=\"" . $value_name . "\"";
+                                    if ($metrics[$category_id]["metrics"][$metric_id]["validation"][$key] == "datetime") {
+                                        echo " selected";
+                                    }
+                                    echo ">" . $value_name . "</option>";
                                 }
-                                echo ">" . $value_name . "</option>";
                             }
                             echo "</select><br>";
+                            if ($displayed_keys < 2) {
+                                echo "<p>The selected metric does not have 2 or more numerical values that can be graphed.</p>";
+                                exit();
+                            }
                             echo "<label for='y_axis'>Y-Axis</label>: <select id='y_axis' name='y_axis'>";
-                            foreach ($metrics[$category_id]["metrics"][$metric_id]["keys"] as $key) {
-                                echo "<option value='$key'>$key</option>";
+                            foreach (array_keys($metrics[$category_id]["metrics"][$metric_id]["keys"]) as $key) {
+                                $value_name = $metrics[$category_id]["metrics"][$metric_id]["keys"][$key];
+                                if (in_array($metrics[$category_id]["metrics"][$metric_id]["validation"][$key], $graphable_values)) {
+                                    echo "<option value='$value_name'>$value_name</option>";
+                                }
                             }
                             echo "</select><br>";
 
