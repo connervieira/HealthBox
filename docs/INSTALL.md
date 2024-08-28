@@ -3,6 +3,11 @@
 This document explains how to install, setup, and use HealthBox.
 
 
+## Commercial Support
+
+While HealthBox can be installed independently by those with technical experience, V0LT offers one-on-one technical support for the installation process for users who are interested in more direct guidance. If you're an individual or business user interested in one-on-one support for the HealthBox installation, setup, usage, and/or development process, you can contact V0LT to schedule a call or meeting at <https://v0lttech.com/contact.php>. V0LT charges a flat rate of $25/hour. The majority of installs will take less than 2 hours to complete from scratch.
+
+
 ## Dependencies
 
 There are a few dependencies that need to be installed for HealthBox to function.
@@ -32,9 +37,11 @@ For example: `cp ~/Downloads/HealthBox /var/www/html/healthbox`
 
 ### Support Directory
 
-HealthBox stores support files in directory outside of the default web-server location. By default, the `/var/www/protected/healthbox` directory is used for this purpose. This path can be manually changed by modifying the `config.json` file in the HealthBox directory, which will be created the first time HealthBox is loaded.
+HealthBox stores support files in directory outside of the default web-server location for sake of security. By default, the `/var/www/protected/healthbox` directory is used for this purpose. This path can be manually changed by modifying the `config.json` file in the HealthBox directory, which will be created the first time HealthBox is loaded.
 
 Make sure the main HealthBox directory and the support directory are both writable to PHP.
+
+For example: `sudo mkdir -p /var/www/protected/healthbox; sudo chown www-data /var/www/protected/healthbox/; sudo chmod 777 /var/www/html/healthbox/
 
 
 ### Connecting
@@ -59,7 +66,7 @@ Once you've verified that HealthBox is working as expected, you should configure
         - **Sign-Out Page** determines where users will be redirected when the want to log out.
         - **Sign-Up Page** determines where users will be redirected if they want to create an account.
     - **Access** determines how users are permitted to access this HealthBox instance.
-        - **Admin** is a comma-separated list of users who are allowed to configure this instance. These users override the whitelist.
+        - **Admin** is a comma-separated list of users who are allowed to configure this instance. These users override the access mode (whitelist/blacklist).
         - **Whitelist** is a comma-separated list of users who are exclusively allowed access when HealthBox is in whitelist access mode.
         - **Blacklist** is a comma-separated list of users who are prohibited from accessing HealthBox when in blacklist mode.
             - If HealthBox is in blacklist mode, and this list is left blank, then all users with accounts on the connected DropAuth instance will be able to access HealthBox.
