@@ -161,7 +161,7 @@ $service_data = load_servicedata();
                         foreach (array_keys($metrics[$category_id]["metrics"]) as $metric_id) {
                             if (isset($health_data[$username][$category_id][$metric_id]) and sizeof($health_data[$username][$category_id][$metric_id]) > 0) { // Check to see if there is at least one datapoint associated with this metric.
                                 echo "<option value='" . $metric_id . "'";
-                                if ($_GET["metric"] == $metric) { echo " selected"; }
+                                if ($_GET["metric"] == $metric_id) { echo " selected"; }
                                 echo ">" . $metrics[$category_id]["metrics"][$metric_id]["name"] . "</option>";
                             }
                         }
