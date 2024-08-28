@@ -3,6 +3,13 @@
 This document explains the basics of developing services that integrate with HealthBox.
 
 
+## Support
+
+If you're the developer of a free and open source program that you'd like to integrate with HealthBox, and you're interested in one-on-one support from V0LT, please reach out at <https://v0lttech.com/contact.php>! I'm happy to offer free assistance to developers of FOSS applications and services.
+
+For commercial/proprietary products, V0LT offers developer assistance on a case-by-case basis. For more information, please reach out at <https://v0lttech.com/contact.php>.
+
+
 ## Introduction
 
 Practically all interaction with HealthBox from external services is done through GET requests. HealthBox contains various endpoints for completing tasks like registering new datapoints, editing foods, and fetching health data.
