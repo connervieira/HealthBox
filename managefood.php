@@ -134,7 +134,7 @@ $selected_food = preg_replace("/[^a-zA-Z0-9 _\-]/", '', $_GET["selected"]); // S
                 <label for="serving_unit">Serving Unit: </label><input type="text" id="serving_unit" name="serving_unit" maxlength="20" pattern="[a-z ]{1,20}" value="<?php echo $food_data["entries"][$username]["foods"][$selected_food]["serving"]["unit"]; ?>" required><br><br>
                 <?php
                 foreach ($food_data["metadata"]["displayed_nutrients"] as $nutrient) {
-                    echo "<label for='" . $nutrient . "'>" . $food_data["metadata"]["nutrients"][$nutrient]["name"] . "</label>: <input id='" . $nutrient . "' name='" . $nutrient . "' min='0' value='" . $food_data["entries"][$username]["foods"][$selected_food]["nutrients"][$nutrient] . "' style='width:80px;' type='number'> " . $food_data["metadata"]["nutrients"][$nutrient]["unit"] . "<br>";
+                    echo "<label for='" . $nutrient . "'>" . $food_data["metadata"]["nutrients"][$nutrient]["name"] . "</label>: <input id='" . $nutrient . "' name='" . $nutrient . "' min='0' value='" . $food_data["entries"][$username]["foods"][$selected_food]["nutrients"][$nutrient] . "' style='width:80px;' type='number' step=\"0.01\"> " . $food_data["metadata"]["nutrients"][$nutrient]["unit"] . "<br>";
                 } 
                 ?>
                 <input class="button" name="submit" id="submit" type="submit" value="Add">
