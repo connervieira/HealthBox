@@ -130,6 +130,12 @@ if (in_array($username, $healthbox_config["auth"]["access"]["admin"]) == false) 
                 $formatted_whitelist = $formatted_whitelist . $user . ",";
             }
             $formatted_whitelist = substr($formatted_whitelist, 0, strlen($formatted_whitelist)-1);
+
+            $formatted_blacklist = "";
+            foreach ($photoguardian_config["auth"]["access"]["blacklist"] as $user) {
+                $formatted_blacklist = $formatted_blacklist . $user . ",";
+            }
+            $formatted_blacklist = substr($formatted_blacklist, 0, strlen($formatted_blacklist)-1);
             ?>
             <form method="POST">
                 <h3>Authentication</h3>
