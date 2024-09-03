@@ -188,8 +188,8 @@ $service_data = load_servicedata();
                                     echo "</select>";
                                 } else { // All other input types.
                                     echo "<label for='" . $key . "'>" . $key . "</label>: <input ";
-                                    if ($validation == "int") { echo "min='1' type='number' step='1'";
-                                    } else if ($validation == "float") { echo "min='1' step='0.001' type='number'";
+                                    if ($validation == "int") { echo "min='0' type='number' step='1'";
+                                    } else if ($validation == "float") { echo "min='0' step='0.001' type='number'";
                                     } else if ($validation == "temperature") { echo "min='-273' type='number'";
                                     } else if ($validation == "percentage") { echo "min='0' max='1' step='0.01' type='number'";
                                     } else if ($validation == "short_string") { echo "maxlength='20' pattern=\"[a-zA-Z0-9 '_\-\(\)]{0,20}\"";
