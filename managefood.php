@@ -112,7 +112,7 @@ $selected_food = preg_replace("/[^a-zA-Z0-9 _\-]/", '', $_GET["selected"]); // S
                 foreach (array_keys($food_data["metadata"]["values"]) as $value) {
                     echo '<label for="value>' . $value . '">' . $food_data["metadata"]["values"][$value]["name"] . ': </label>';
                     if ($food_data["metadata"]["values"][$value]["type"] == "str") {
-                        echo '<input type="text" id="value>' . $value . '" name="value>' . $value . '" max="100" autocomplete="off" pattern="[a-zA-Z0-9 _\-]{1,100}" value="' . $food_data["entries"][$username]["foods"][$selected_food][$value] . '"';
+                        echo '<input type="text" id="value>' . $value . '" name="value>' . $value . '" max="100" autocomplete="off" pattern="[a-zA-Z0-9 _\-\'()]{1,100}" value="' . $food_data["entries"][$username]["foods"][$selected_food][$value] . '"';
                         if ($food_data["metadata"]["values"][$value]["required"] == true) {
                             echo " required";
                         }
@@ -123,7 +123,7 @@ $selected_food = preg_replace("/[^a-zA-Z0-9 _\-]/", '', $_GET["selected"]); // S
                             echo '    <option value="">Undefined</option>';
                         }
                         echo '    <option value="true"'; if ($food_data["entries"][$username]["foods"][$selected_food][$value] == true) { echo " selected"; } echo '>True</option>';
-                        echo '    <option value="false"'; if ($food_data["entries"][$username]["foods"][$selected_food][$value] == false) { echo " selected"; } echo '>False</option>';
+                        echo '    <option value="false"'; if (isset($food_data["entries"][$username]["foods"][$selected_food][$value]) and $food_data["entries"][$username]["foods"][$selected_food][$value] == false) { echo " selected"; } echo '>False</option>';
                         echo '</select><br>';
                     } else {
                         echo "<p>The type for this value is invalid</p>";
