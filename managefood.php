@@ -92,7 +92,7 @@ $selected_food = preg_replace("/[^a-zA-Z0-9 _\-]/", '', $_GET["selected"]); // S
                     }
                 }
 
-                echo "<p>Request URL: <a href='./updatefood.php" . $get_data . "'>" . "./updatefood.php" . $get_data . "</a></p>";
+                echo "<p>Request URL: <a href=\"./updatefood.php" . $get_data . "\">" . "./updatefood.php" . $get_data . "</a></p>";
 
             }
             ?>
@@ -112,7 +112,7 @@ $selected_food = preg_replace("/[^a-zA-Z0-9 _\-]/", '', $_GET["selected"]); // S
                 foreach (array_keys($food_data["metadata"]["values"]) as $value) {
                     echo '<label for="value>' . $value . '">' . $food_data["metadata"]["values"][$value]["name"] . ': </label>';
                     if ($food_data["metadata"]["values"][$value]["type"] == "str") {
-                        echo '<input type="text" id="value>' . $value . '" name="value>' . $value . '" max="100" autocomplete="off" pattern="[a-zA-Z0-9 _\-\'()]{1,100}" value="' . $food_data["entries"][$username]["foods"][$selected_food][$value] . '"';
+                        echo '<input type="text" id="value>' . $value . '" name="value>' . $value . '" max="100" autocomplete="off" pattern="[a-zA-Z0-9 _\-\'()$%#!=+]{1,100}" value="' . $food_data["entries"][$username]["foods"][$selected_food][$value] . '"';
                         if ($food_data["metadata"]["values"][$value]["required"] == true) {
                             echo " required";
                         }
@@ -209,9 +209,11 @@ $selected_food = preg_replace("/[^a-zA-Z0-9 _\-]/", '', $_GET["selected"]); // S
             <h3 id="list">List Foods</h3>
             <?php
             if (in_array($username, array_keys($food_data["entries"])) and sizeof($food_data["entries"][$username]["foods"]) > 0) {
-                foreach (array_keys($food_data["entries"][$username]["foods"]) as $food) {
+                $food_ids = array_keys($food_data["entries"][$username]["foods"]);
+                asort($food_ids);
+                foreach ($food_ids as $food) {
                     echo "<div class=\"buffer\">";
-                    echo "<h4><a href='?selected=" . $food . "'>" . $food_data["entries"][$username]["foods"][$food]["name"] . " (" . $food . ")</a></h4>";
+                    echo "<h4>" . $food_data["entries"][$username]["foods"][$food]["brand"] . " " . $food_data["entries"][$username]["foods"][$food]["name"] . "</h4><a style=\"\" href='?selected=" . $food . "'>(" . $food . ")</a></h4>";
                     echo "</div>";
                 }
             } else {

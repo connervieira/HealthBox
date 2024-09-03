@@ -73,7 +73,7 @@ foreach (array_keys($food_data["metadata"]["values"]) as $value) {
                 unset($values[$value]);
             }
         } else { // This value is set.
-            if ($values[$value] != preg_replace("/[^a-zA-Z0-9\-_ \'()]/", '', $values[$value])) { // Check to see if the provided value contains disallowed values.
+            if ($values[$value] != preg_replace("/[^a-zA-Z0-9\-_ '()$%#!=+]/", '', $values[$value])) { // Check to see if the provided value contains disallowed values.
                 echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $value . "\", \"reason\": \"disallowed_characters\", \"description\": \"The submitted " . $value . " is invalid because it contains disallowed characters.\"}}";
                 unlock_file($food_database_filepath);
                 exit();
