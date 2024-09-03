@@ -189,7 +189,9 @@ $selected_food = preg_replace("/[^a-zA-Z0-9 _\-]/", '', $_GET["selected"]); // S
             if ($_POST["submit"] == "View") {
                 $food_id = preg_replace("/[^a-zA-Z0-9 _\-]/", '', $_POST["food"]);
                 if (in_array($food_id, array_keys($food_data["entries"][$username]["foods"]))) { // Check to see if this ID exists in this users foods.
+                    echo "<pre style=\"text-align:left;\">";
                     print_r($food_data["entries"][$username]["foods"][$food_id]);
+                    echo "</pre>";
                 } else {
                     echo "<p>The specified food ID does not exist.</p>";
                     echo "<a class=\"button\" role=\"button\" href=\"managefood.php\">Back</a>";
