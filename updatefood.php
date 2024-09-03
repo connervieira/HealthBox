@@ -1,4 +1,5 @@
 <?php
+include "./utils.php";
 $food_id = $_GET["id"];
 $serving_size = $_GET["servingsize"];
 $serving_unit = $_GET["servingunit"];
