@@ -9,12 +9,12 @@ if ($_SESSION['authid'] !== "dropauth") { // Check to see if the user is not sig
 
 if (in_array($username, $healthbox_config["auth"]["access"]["admin"]) == false) {
     if ($healthbox_config["auth"]["access"]["mode"] == "whitelist") {
-        if (in_array($username, $healthbox_config["auth"]["access"]["whitelist"]) == false) { // Check to make sure this user is not in blacklist.
+        if (in_array($username, $healthbox_config["auth"]["access"]["whitelist"]) == false) { // Check to make sure this user is in the whitelist.
             echo "<p>You are not permitted to access this utility.</p>";
             exit();
         }
     } else if ($healthbox_config["auth"]["access"]["mode"] == "blacklist") {
-        if (in_array($username, $healthbox_config["auth"]["access"]["blacklist"]) == true) { // Check to make sure this user is not in blacklist.
+        if (in_array($username, $healthbox_config["auth"]["access"]["blacklist"]) == true) { // Check to make sure this user is not in the blacklist.
             echo "<p>You are not permitted to access this utility.</p>";
             exit();
         }
