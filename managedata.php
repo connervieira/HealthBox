@@ -166,12 +166,12 @@ $service_data = load_servicedata();
                                 if ($validation == "datetime" or $validation == "start_time" or $validation == "end_time") { // Check to see if this value is a timestamp, since these require multiple fields.
                                     echo "<label for='" . $key . "'>" . $key . " (Date)</label>: <input id='key-" . $key . "_date' name='key-" . $key . "_date' type='date' autocomplete='off'";
                                     if ($required == true) { echo " required"; }
-                                    echo "><br>";
+                                    echo "> UTC<br>";
                                     echo "<label for='" . $key . "'>" . $key . " (Time)</label>: <input id='key-" . $key . "_time' name='key-" . $key . "_time' type='time' autocomplete='off'";
                                     if ($required == true) { echo " required"; }
-                                    echo "><br>";
+                                    echo "> UTC<br>";
                                 } else if ($validation == "sex" or $validation == "sexuality" or $validation == "side") {
-                                    echo "<label for='key-" . $key . "'>" . $key . "</label><select id='key-" . $key . "' name='key-" . $key . "'>";
+                                    echo "<label for='key-" . $key . "'>" . $key . "</label>: <select id='key-" . $key . "' name='key-" . $key . "'>";
                                     if ($validation == "sex") {
                                         echo "<option value='M'>Male</option>";
                                         echo "<option value='F'>Female</option>";
@@ -185,7 +185,7 @@ $service_data = load_servicedata();
                                         echo "<option value='L'>Left</option>";
                                         echo "<option value='R'>Right</option>";
                                     }
-                                    echo "</select>";
+                                    echo "</select><br>";
                                 } else { // All other input types.
                                     echo "<label for='" . $key . "'>" . $key . "</label>: <input ";
                                     if ($validation == "int") { echo "min='0' type='number' step='1'";
@@ -193,8 +193,7 @@ $service_data = load_servicedata();
                                     } else if ($validation == "temperature") { echo "min='-273' type='number'";
                                     } else if ($validation == "percentage") { echo "min='0' max='1' step='0.01' type='number'";
                                     } else if ($validation == "short_string") { echo "maxlength='20' pattern=\"[a-zA-Z0-9 '_\-\(\)]{0,20}\"";
-                                    } else if ($validation == "long_string") { echo "maxlength='150' pattern=\"[a-zA-Z0-9 '_\-\(\)]{0,150}\"";
-                                    } else if ($validation == "long_string") { echo "maxlength='150' pattern=\"[a-zA-Z0-9 '_\-\(\)]{0,150}\"";
+                                    } else if ($validation == "long_string") { echo "maxlength='150' pattern=\"[a-zA-Z0-9 '_\-\(\)\,]{0,150}\"";
                                     } else if ($validation == "boolean") { echo "type='checkbox'";
                                     } else if ($validation == "mood") { echo "min='-5' max='5' step='1' type='number'";
                                     }

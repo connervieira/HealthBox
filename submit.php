@@ -198,7 +198,7 @@ for ($i = 0; $i < sizeof($submission_data); $i++) { // Validate each submitted v
             unlock_file($healthdata_database_filepath);
             exit();
         }
-        if ($submission_data[$key] != preg_replace("/[^a-zA-Z0-9 '_\-()]/", '', $submission_data[$key])) { // Check to see if this value contains disallowed characters.
+        if ($submission_data[$key] != preg_replace("/[^a-zA-Z0-9 '_\-()\,]/", '', $submission_data[$key])) { // Check to see if this value contains disallowed characters.
             echo "{\"error\": {\"id\": \"invalid_value\", \"value\": \"" . $key . "\", \"description\": \"The data submitted for " . $key . " is invalid because it contains disallowed characters.\"}}";
             unlock_file($healthdata_database_filepath);
             exit();
