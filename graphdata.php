@@ -63,6 +63,7 @@ $service_data = load_servicedata();
                 if (in_array($category, array_keys($metrics))) { // Check to see if the category exists.
                     if (in_array($metric, array_keys($metrics[$category]["metrics"]))) { // Check to see if the metric exists.
                         if (isset($health_data[$username][$category][$metric])) { // Check to see if this user has datapoints of this metric.
+                            ksort($health_data[$username][$category][$metric]);
                             if (in_array($x_axis, $metrics[$category]["metrics"][$metric]["keys"]) and in_array($y_axis, $metrics[$category]["metrics"][$metric]["keys"])) { // Check to make sure both the X-axis and Y-axis are valid values.
                                 $start_time = strtotime($start_time);
                                 $end_time = strtotime($end_time);

@@ -19,3 +19,4 @@ October 9th, 2024
     - `circumference_bicep`
     - `circumference_quadricep`
     - `circumference_calf`
+- Graphs are now displayed in chronological order.
