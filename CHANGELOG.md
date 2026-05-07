@@ -20,3 +20,4 @@ October 9th, 2024
     - `circumference_quadricep`
     - `circumference_calf`
 - Graphs are now displayed in chronological order.
+- "datetime" fields are now pre-filled with the current date/time in the "Register Data" form on the "Manage Data" page.

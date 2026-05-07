@@ -166,9 +166,11 @@ $service_data = load_servicedata();
                                 if ($validation == "datetime" or $validation == "start_time" or $validation == "end_time") { // Check to see if this value is a timestamp, since these require multiple fields.
                                     echo "<label for='" . $key . "'>" . $key . " (Date)</label>: <input id='key-" . $key . "_date' name='key-" . $key . "_date' type='date' autocomplete='off'";
                                     if ($required == true) { echo " required"; }
+                                    if ($validation == "datetime") { echo " value='" . gmdate('Y-m-d') . "'"; } // Set to the current date in UTC as the default value.
                                     echo "> UTC<br>";
                                     echo "<label for='" . $key . "'>" . $key . " (Time)</label>: <input id='key-" . $key . "_time' name='key-" . $key . "_time' type='time' autocomplete='off'";
                                     if ($required == true) { echo " required"; }
+                                    if ($validation == "datetime") { echo " value='" . gmdate('H:i') . "'"; } // Set to the current time in UTC as the default value.
                                     echo "> UTC<br>";
                                 } else if ($validation == "sex" or $validation == "sexuality" or $validation == "side") {
                                     echo "<label for='key-" . $key . "'>" . $key . "</label>: <select id='key-" . $key . "' name='key-" . $key . "'>";
